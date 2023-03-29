@@ -1,3 +1,0 @@
-[submodule "SEP4_IOT/SEP4_IOT/FreeRTOS"]
-	path = SEP4_IOT/SEP4_IOT/FreeRTOS
-	url = https://github.com/ihavn/VIA_FreeRTOS_AVRMEGA
