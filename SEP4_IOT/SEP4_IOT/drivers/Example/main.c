@@ -30,6 +30,8 @@ void task2( void *pvParameters );
 
 // define semaphore handle
 SemaphoreHandle_t xTestSemaphore;
+int16_t humidity;
+int16_t temperature;
 
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
@@ -79,8 +81,8 @@ void task1( void *pvParameters )
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
 		printf("----Start----");
-		int16_t humidity = 0.0;
-		int16_t temp = 0.0;
+		humidity = 0.0;
+		temperature = 0.0;
 		
 		puts("Tying to wake up");
 		if (HIH8120_OK != hih8120_wakeup())
@@ -101,10 +103,11 @@ void task1( void *pvParameters )
 			puts("MESURING SUCCESSFUL");
 		}
 		humidity = hih8120_getHumidityPercent_x10();
-		temp = hih8120_getTemperature_x10();
-		printf("TEMP: %d\n",temp);
+		temperature = hih8120_getTemperature_x10();
+		printf("TEMP: %d\n",temperature);
 		printf("HUMID: %d\n",humidity);
 		printf("----END----");
+		vTaskDelay(pdMS_TO_TICKS(60000));
 	}
 }
 
