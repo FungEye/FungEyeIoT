@@ -23,6 +23,8 @@
 //SENSEROS
 //Humidity & Temperature
 #include <hih8120.h>
+//CO2
+#include <mh_z19.h>
 
 // define two Tasks
 void task1( void *pvParameters );
@@ -32,6 +34,7 @@ void task2( void *pvParameters );
 SemaphoreHandle_t xTestSemaphore;
 int16_t humidity;
 int16_t temperature;
+int16_t co2;
 
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
@@ -53,7 +56,7 @@ void create_tasks_and_semaphores(void)
 
 	xTaskCreate(
 	task1
-	,  "Task1"  // A name just for humans
+	,  "HumidityTemperature"  // A name just for humans
 	,  configMINIMAL_STACK_SIZE  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
 	,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
@@ -61,7 +64,7 @@ void create_tasks_and_semaphores(void)
 
 	xTaskCreate(
 	task2
-	,  "Task2"  // A name just for humans
+	,  "CO2"  // A name just for humans
 	,  configMINIMAL_STACK_SIZE  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
 	,  1  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
@@ -80,7 +83,7 @@ void task1( void *pvParameters )
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
-		printf("----Start----");
+		printf("----Temp & Humidity START----");
 		humidity = 0.0;
 		temperature = 0.0;
 		
@@ -94,7 +97,7 @@ void task1( void *pvParameters )
 		}
 		vTaskDelay(pdMS_TO_TICKS(100));
 		
-		puts("Meauring");
+		puts("Measuring");
 		if (HIH8120_OK != hih8120_measure())
 		{
 			puts("MESURING FAILED");
@@ -106,7 +109,7 @@ void task1( void *pvParameters )
 		temperature = hih8120_getTemperature_x10();
 		printf("TEMP: %d\n",temperature);
 		printf("HUMID: %d\n",humidity);
-		printf("----END----");
+		printf("----Temp & Humidity END----");
 		vTaskDelay(pdMS_TO_TICKS(60000));
 	}
 }
@@ -120,11 +123,21 @@ void task2( void *pvParameters )
 	// Initialise the xLastWakeTime variable with the current time.
 	xLastWakeTime = xTaskGetTickCount();
 
+	mh_z19_returnCode_t rc;
+
 	for(;;)
 	{
-		xTaskDelayUntil( &xLastWakeTime, xFrequency );
-		puts("Task2"); // stdio functions are not reentrant - Should normally be protected by MUTEX
-		PORTA ^= _BV(PA7);
+		printf("----CO2 START----");
+		rc = mh_z19_takeMeassuring();
+		if (rc != MHZ19_OK)
+		{
+			puts("CO2 MEASURING FAILED");
+		}
+		
+		co2 = mh_z19_getCo2Ppm;
+		printf("CO2: %d\n",co2);
+		printf("----CO2 END----");
+		vTaskDelay(pdMS_TO_TICKS(6000));
 	}
 }
 
@@ -153,6 +166,10 @@ void initialiseSystem()
 	{
 		puts("hih8120 FAILED");
 	}
+	
+	// The parameter is the USART port the MH-Z19 sensor is connected to - in this case USART3
+	mh_z19_initialise(ser_USART3);
+	puts("mh_z19 INITAILISED");
 
 }
 
