@@ -21,6 +21,7 @@ void lora_handler_task( void *pvParameters );
 static lora_driver_payload_t _uplink_payload;
 extern int16_t temperature;
 extern int16_t humidity;
+extern int16_t co2;
 
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority)
 {
@@ -134,7 +135,7 @@ void lora_handler_task( void *pvParameters )
 		// Some dummy payload
 		uint16_t hum = humidity; // measured humidity
 		int16_t temp = temperature; // measured temp
-		uint16_t co2_ppm = 1050; // Dummy CO2
+		uint16_t co2_ppm = co2; // measured CO2
 		
 		printf("TEMP BEFORE SEND: %d\n",temperature);
 		printf("HUMID BEFORE SEND: %d\n",humidity);
