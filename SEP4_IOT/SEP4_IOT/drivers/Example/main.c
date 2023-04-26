@@ -83,7 +83,7 @@ void task1( void *pvParameters )
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
-		printf("----Start----");
+		printf("----Temp & Humidity START----");
 		humidity = 0.0;
 		temperature = 0.0;
 		
@@ -97,7 +97,7 @@ void task1( void *pvParameters )
 		}
 		vTaskDelay(pdMS_TO_TICKS(100));
 		
-		puts("Meauring");
+		puts("Measuring");
 		if (HIH8120_OK != hih8120_measure())
 		{
 			puts("MESURING FAILED");
@@ -109,7 +109,7 @@ void task1( void *pvParameters )
 		temperature = hih8120_getTemperature_x10();
 		printf("TEMP: %d\n",temperature);
 		printf("HUMID: %d\n",humidity);
-		printf("----END----");
+		printf("----Temp & Humidity END----");
 		vTaskDelay(pdMS_TO_TICKS(60000));
 	}
 }
@@ -127,6 +127,7 @@ void task2( void *pvParameters )
 
 	for(;;)
 	{
+		printf("----CO2 START----");
 		rc = mh_z19_takeMeassuring();
 		if (rc != MHZ19_OK)
 		{
@@ -135,6 +136,7 @@ void task2( void *pvParameters )
 		
 		co2 = mh_z19_getCo2Ppm;
 		printf("CO2: %d\n",co2);
+		printf("----CO2 END----");
 		vTaskDelay(pdMS_TO_TICKS(6000));
 	}
 }
@@ -167,6 +169,7 @@ void initialiseSystem()
 	
 	// The parameter is the USART port the MH-Z19 sensor is connected to - in this case USART3
 	mh_z19_initialise(ser_USART3);
+	puts("mh_z19 INITAILISED");
 
 }
 
