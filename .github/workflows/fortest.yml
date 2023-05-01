@@ -33,7 +33,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake ..
+        cmake .\SEP4_IOT\SEP4_IOT\drivers\Example\tests
         make
 
     - name: Run tests
