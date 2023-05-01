@@ -27,7 +27,7 @@ jobs:
         cd /usr/src/gtest
         sudo cmake CMakeLists.txt
         sudo make
-        sudo cp *.a /usr/lib
+        sudo cp lib/*.a /usr/lib
 
     - name: Build project
       run: |
@@ -39,4 +39,4 @@ jobs:
     - name: Run tests
       run: |
         cd build
-        ./test_runner
+        .\SEP4_IOT\SEP4_IOT\drivers\Example\tests
