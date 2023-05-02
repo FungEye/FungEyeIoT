@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\ninaw\OneDrive - ViaUC\Dokumenter\GitHub\FungEyeIoT\build\CMakeFiles\ea69855b505a77f45e0acb0db968a924\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{3861F438-B03A-3C35-85B1-7055456219E0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
