@@ -1,32 +1,44 @@
-name: CMake Tests
+name: C CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: bash
-
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-    - name: Configure CMake
-      run: cmake -S $GITHUB_WORKSPACE -B ${{runner.workspace}}/build
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtest-dev cmake
 
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
+    - name: Build Google Test
+      run: |
+        cd /usr/src/gtest
+        sudo mkdir build
+        cd build
+        sudo cmake ..
+        sudo make
+        sudo cp lib/*.a /usr/lib
 
-    - name: Test
-      working-directory: ${{runner.workspace}}/build
-      run: GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
+    - name: Build project
+      run: |
+        mkdir build
+        cd build
+        cp ../CMakeLists.txt .  # Copy CMakeLists.txt into the build directory
+        cmake .
+        make
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: test_results_xml
-        path: ${{runner.workspace}}/build/test-results/*/.xml
+    - name: Run tests
+      run: |
+        cd build
+        ./test_runner
