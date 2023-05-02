@@ -1,10 +1,9 @@
-name: IOT CI
+name: C CI
 
 on:
   push:
     branches:
       - main
-      - develop
   pull_request:
     branches:
       - main
@@ -25,7 +24,9 @@ jobs:
     - name: Build Google Test
       run: |
         cd /usr/src/gtest
-        sudo cmake CMakeLists.txt
+        sudo mkdir build
+        cd build
+        sudo cmake ..
         sudo make
         sudo cp lib/*.a /usr/lib
 
@@ -33,10 +34,11 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake ..\SEP4_IOT\SEP4_IOT\drivers\Example\tests\CMakeFiles.txt
+        cp ../CMakeLists.txt .  # Copy CMakeLists.txt into the build directory
+        cmake .
         make
 
     - name: Run tests
       run: |
         cd build
-        ..\SEP4_IOT\SEP4_IOT\drivers\Example\tests\CMakeFiles.txt
+        ./test_runner
