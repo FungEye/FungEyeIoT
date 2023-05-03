@@ -2,6 +2,10 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+Main\LoRaWANHandler.c
+
+Main\main.c
+
 FreeRTOS\FreeRTOSTraceDriver\FreeRTOSTraceDriver.c
 
 FreeRTOS\src\croutine.c
@@ -23,8 +27,4 @@ FreeRTOS\src\tasks.c
 FreeRTOS\src\timers.c
 
 FreeRTOS\src\variantHooks.c
-
-drivers\Example\LoRaWANHandler.c
-
-drivers\Example\main.c
 
