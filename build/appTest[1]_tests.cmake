@@ -1,0 +1,1 @@
+set(  appTest_TESTS)

@@ -1,0 +1,3 @@
+C:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build/_deps/googletest-subbuild/CMakeFiles/googletest-populate.dir
+C:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build/_deps/googletest-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build/_deps/googletest-subbuild/CMakeFiles/ZERO_CHECK.dir
