@@ -1,11 +1,3 @@
-/*
-* main.c
-* Author : IHA
-*
-* Example main file including LoRaWAN setup
-* Just for inspiration :)
-*/
-
 #include <stdio.h>
 #include <avr/io.h>
 
