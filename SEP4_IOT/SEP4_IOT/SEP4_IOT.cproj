@@ -195,6 +195,12 @@
     <Compile Include="drivers\twi.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Main\CO2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Main\CO2.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Main\LoRaWANHandler.c">
       <SubType>compile</SubType>
     </Compile>
@@ -291,6 +297,12 @@
     <Compile Include="FreeRTOS\src\variantHooks.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Main\HumidityTemperature.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Main\HumidityTemperature.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="drivers\" />
@@ -299,6 +311,8 @@
     <Folder Include="FreeRTOS\Example\" />
     <Folder Include="FreeRTOS\FreeRTOSTraceDriver\" />
     <Folder Include="FreeRTOS\src\" />
+    <Folder Include="Main\HeaderFiles" />
+    <Folder Include="Main\SourceFiles" />
   </ItemGroup>
   <ItemGroup>
     <None Include="drivers\.git">

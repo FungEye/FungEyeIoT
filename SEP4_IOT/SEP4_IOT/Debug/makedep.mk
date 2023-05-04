@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+Main\CO2.c
+
 Main\LoRaWANHandler.c
 
 Main\main.c
@@ -27,4 +29,6 @@ FreeRTOS\src\tasks.c
 FreeRTOS\src\timers.c
 
 FreeRTOS\src\variantHooks.c
+
+Main\HumidityTemperature.c
 

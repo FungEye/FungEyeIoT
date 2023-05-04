@@ -38,11 +38,14 @@ SUBDIRS :=  \
 ../FreeRTOS/ \
 ../FreeRTOS/Example/ \
 ../FreeRTOS/FreeRTOSTraceDriver/ \
-../FreeRTOS/src/
+../FreeRTOS/src/ \
+../Main/HeaderFiles \
+../Main/SourceFiles
 
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../Main/CO2.c \
 ../Main/LoRaWANHandler.c \
 ../Main/main.c \
 ../FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.c \
@@ -55,7 +58,8 @@ C_SRCS +=  \
 ../FreeRTOS/src/stream_buffer.c \
 ../FreeRTOS/src/tasks.c \
 ../FreeRTOS/src/timers.c \
-../FreeRTOS/src/variantHooks.c
+../FreeRTOS/src/variantHooks.c \
+../Main/HumidityTemperature.c
 
 
 PREPROCESSING_SRCS += 
@@ -65,6 +69,7 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+Main/CO2.o \
 Main/LoRaWANHandler.o \
 Main/main.o \
 FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.o \
@@ -77,9 +82,11 @@ FreeRTOS/src/queue.o \
 FreeRTOS/src/stream_buffer.o \
 FreeRTOS/src/tasks.o \
 FreeRTOS/src/timers.o \
-FreeRTOS/src/variantHooks.o
+FreeRTOS/src/variantHooks.o \
+Main/HumidityTemperature.o
 
 OBJS_AS_ARGS +=  \
+Main/CO2.o \
 Main/LoRaWANHandler.o \
 Main/main.o \
 FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.o \
@@ -92,9 +99,11 @@ FreeRTOS/src/queue.o \
 FreeRTOS/src/stream_buffer.o \
 FreeRTOS/src/tasks.o \
 FreeRTOS/src/timers.o \
-FreeRTOS/src/variantHooks.o
+FreeRTOS/src/variantHooks.o \
+Main/HumidityTemperature.o
 
 C_DEPS +=  \
+Main/CO2.d \
 Main/LoRaWANHandler.d \
 Main/main.d \
 FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.d \
@@ -107,9 +116,11 @@ FreeRTOS/src/queue.d \
 FreeRTOS/src/stream_buffer.d \
 FreeRTOS/src/tasks.d \
 FreeRTOS/src/timers.d \
-FreeRTOS/src/variantHooks.d
+FreeRTOS/src/variantHooks.d \
+Main/HumidityTemperature.d
 
 C_DEPS_AS_ARGS +=  \
+Main/CO2.d \
 Main/LoRaWANHandler.d \
 Main/main.d \
 FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.d \
@@ -122,7 +133,8 @@ FreeRTOS/src/queue.d \
 FreeRTOS/src/stream_buffer.d \
 FreeRTOS/src/tasks.d \
 FreeRTOS/src/timers.d \
-FreeRTOS/src/variantHooks.d
+FreeRTOS/src/variantHooks.d \
+Main/HumidityTemperature.d
 
 OUTPUT_FILE_PATH +=SEP4_IOT.elf
 
@@ -138,6 +150,13 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+Main/CO2.o: ../Main/CO2.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG -DF_CPU=16000000L  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include" -I"../drivers" -I"../FreeRTOS/src"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 Main/LoRaWANHandler.o: ../Main/LoRaWANHandler.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
@@ -223,6 +242,13 @@ FreeRTOS/src/timers.o: ../FreeRTOS/src/timers.c
 	
 
 FreeRTOS/src/variantHooks.o: ../FreeRTOS/src/variantHooks.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG -DF_CPU=16000000L  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include" -I"../drivers" -I"../FreeRTOS/src"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+Main/HumidityTemperature.o: ../Main/HumidityTemperature.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG -DF_CPU=16000000L  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include" -I"../drivers" -I"../FreeRTOS/src"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
