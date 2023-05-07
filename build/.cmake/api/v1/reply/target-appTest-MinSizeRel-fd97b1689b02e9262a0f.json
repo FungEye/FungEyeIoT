@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "RelWithDebInfo/appTest.exe"
+			"path" : "MinSizeRel/appTest.exe"
 		},
 		{
-			"path" : "RelWithDebInfo/appTest.pdb"
+			"path" : "MinSizeRel/appTest.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -62,7 +62,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /Zi /O2 /Ob1 /DNDEBUG"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O1 /Ob1 /DNDEBUG"
 				},
 				{
 					"fragment" : "-std:c++14"
@@ -112,11 +112,11 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "gtest_main::@1ea2dfc0605fe3ab2a3f"
+			"id" : "gtest::@1ea2dfc0605fe3ab2a3f"
 		},
 		{
 			"backtrace" : 2,
-			"id" : "gtest::@1ea2dfc0605fe3ab2a3f"
+			"id" : "gtest_main::@1ea2dfc0605fe3ab2a3f"
 		},
 		{
 			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
@@ -128,21 +128,21 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /Zi /O2 /Ob1 /DNDEBUG",
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O1 /Ob1 /DNDEBUG",
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:X86 /debug /INCREMENTAL /subsystem:console",
+				"fragment" : "/machine:X86 /INCREMENTAL:NO /subsystem:console",
 				"role" : "flags"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "lib\\RelWithDebInfo\\gtest_main.lib",
+				"fragment" : "lib\\MinSizeRel\\gtest_main.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 4,
-				"fragment" : "lib\\RelWithDebInfo\\gtest.lib",
+				"fragment" : "lib\\MinSizeRel\\gtest.lib",
 				"role" : "libraries"
 			},
 			{
