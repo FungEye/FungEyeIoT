@@ -1,6 +1,5 @@
 // Most of the imports are done in Header file.
 #include "CO2.h"
-static void _run(void* params);
 
 // Would be great idea to make it static.
 int16_t co2;
@@ -28,7 +27,7 @@ void co2Task_run()
 // Being called from main.c
 void co2Task_create(){
 	xTaskCreate(
-	_run,				       // Name of method
+	_runCO2,				       // Name of method
 	"CO2",						   // A name just for humans
 	configMINIMAL_STACK_SIZE,	   // This stack size can be checked & adjusted by reading the Stack Highwater
 	NULL,					   	   // (void *pvParameters)
@@ -38,7 +37,7 @@ void co2Task_create(){
 }
 
 // Main task for CO2. 
-static void _run(void* params) {
+void _runCO2(void* params) {
 	// In future we could use this for some INIT values
 	
 	while (1) {
