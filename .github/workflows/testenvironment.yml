@@ -2,7 +2,7 @@ name: CMake Tests
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, feature-testing-version2]
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
       run: cmake --build .
 
     - name: Test
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/build/test
       run: GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
 
     - name: Upload test results

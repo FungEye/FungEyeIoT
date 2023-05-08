@@ -13,7 +13,7 @@ project(googletest-populate NONE)
 
 include(ExternalProject)
 ExternalProject_Add(googletest-populate
-                     "UPDATE_DISCONNECTED" "False" "DOWNLOAD_EXTRACT_TIMESTAMP" "true" "URL" "https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip"
+                     "UPDATE_DISCONNECTED" "False" "DOWNLOAD_EXTRACT_TIMESTAMP" "false" "URL" "https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip"
                     SOURCE_DIR          "C:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build/_deps/googletest-src"
                     BINARY_DIR          "C:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build/_deps/googletest-build"
                     CONFIGURE_COMMAND   ""

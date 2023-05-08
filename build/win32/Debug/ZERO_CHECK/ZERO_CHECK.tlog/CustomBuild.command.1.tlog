@@ -1,6 +1,6 @@
 ^C:\USERS\NINAW\ONEDRIVE - VIAUC\DOKUMENTER\GITHUB\FUNGEYEIOT\BUILD\CMAKEFILES\EA69855B505A77F45E0ACB0DB968A924\GENERATE.STAMP.RULE
 setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SC:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT" "-BC:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build/appTest.sln"
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SC:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT" "-BC:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/ninaw/OneDrive - ViaUC/Dokumenter/GitHub/FungEyeIoT/build/SEP4_IOT_TOP_LEVEL.sln"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
