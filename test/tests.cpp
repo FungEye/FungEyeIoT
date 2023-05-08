@@ -19,6 +19,7 @@ FAKE_VALUE_FUNC(uint16_t, hih8120_getHumidityPercent_x10);
 FAKE_VALUE_FUNC(int16_t, hih8120_getTemperature_x10);
 FAKE_VALUE_FUNC(float, hih8120_getHumidity);
 FAKE_VALUE_FUNC(float, hih8120_getTemperature);
+//FAKE_VOID_FUNC(_run, void*);
 
 // Create Test fixture and Reset all Mocks before each test
 class Test_production : public ::testing::Test
@@ -49,9 +50,26 @@ TEST_F(Test_production, Test1) {
 	ASSERT_EQ(1, 1);
 }
 
-TEST_F(Test_production, Test_production_WakeUpCalledOnce_Test) {
+TEST_F(Test_production, xTaskCreateCalledOnce) {
 	
 	humidityTemperatureTask_create();
-	ASSERT_TRUE(hih8120_wakeup_fake.call_count > 0);
+	ASSERT_EQ(xTaskCreate_fake.call_count, 1);
 }
 
+// Test that the task is created correct
+TEST_F(Test_production, Test_createTemperatureHumidityTask)
+{
+	// Create the co2 task
+	humidityTemperatureTask_create();
+
+	// Is xTaskCreate called?
+	ASSERT_EQ(xTaskCreate_fake.call_count, 1);
+	// Check all arguments to xTaskCreate
+	ASSERT_EQ(xTaskCreate_fake.arg0_val, &_run);
+	ASSERT_EQ(strncmp(xTaskCreate_fake.arg1_val, "HumidityTemperature", 8), 0);
+	ASSERT_EQ(xTaskCreate_fake.arg2_val, configMINIMAL_STACK_SIZE);
+	ASSERT_EQ(xTaskCreate_fake.arg3_val, nullptr);
+	ASSERT_EQ(xTaskCreate_fake.arg4_val, 1);
+	ASSERT_EQ(xTaskCreate_fake.arg5_val, nullptr);
+
+}
