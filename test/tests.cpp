@@ -69,9 +69,10 @@ TEST_F(Test_production, humAndTemp_createTaskArgsCheck)
 
 }
 
-TEST_F(Test_production, humAndTemp_vTaskDelayCall) {
-	
+TEST_F(Test_production, humAndTemp_vTaskDelayCallArgs) {
 	humidityTemperatureTask_create();
 	humidityTemperatureTask_run();
-	ASSERT_TRUE(vTaskDelay_fake.call_count >= 1);
+
+	ASSERT_EQ(vTaskDelay_fake.arg0_val, pdMS_TO_TICKS(6000));
 }
+

@@ -65,9 +65,10 @@ TEST_F(Test_production, co2_taskCreateArgsCheck)
 
 }
 
-TEST_F(Test_production, co2_vTaskDelayCall) {
+TEST_F(Test_production, co2_vTaskDelayCallArgs) {
 	
 	co2Task_create();
     co2Task_run();
-	ASSERT_TRUE(vTaskDelay_fake.call_count >= 1);
+
+    ASSERT_EQ(vTaskDelay_fake.arg0_val, pdMS_TO_TICKS(6000));
 }
