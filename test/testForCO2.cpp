@@ -41,14 +41,14 @@ protected:
 };
 
 
-TEST_F(Test_production, xTaskCreateCalledOnceCO2) {
+TEST_F(Test_production, co2xTaskCreateCalledOnce) {
 	
 	co2Task_create();
 	ASSERT_EQ(xTaskCreate_fake.call_count, 1);
 }
 
 // Test that the task is created correct
-TEST_F(Test_production, Test_createCO2Task)
+TEST_F(Test_production, co2_taskCreateArgsCheck)
 {
 	// Create the co2 task
 	co2Task_create();
@@ -63,4 +63,11 @@ TEST_F(Test_production, Test_createCO2Task)
 	ASSERT_EQ(xTaskCreate_fake.arg4_val, 1);
 	ASSERT_EQ(xTaskCreate_fake.arg5_val, nullptr);
 
+}
+
+TEST_F(Test_production, co2_vTaskDelayCall) {
+	
+	co2Task_create();
+    co2Task_run();
+	ASSERT_TRUE(vTaskDelay_fake.call_count >= 1);
 }

@@ -9,9 +9,7 @@ int16_t co2;
 void co2Task_run()	
 {
 	mh_z19_returnCode_t rc;
-
-	for(;;)
-	{
+	
 		rc = mh_z19_takeMeassuring();
 		if (rc != MHZ19_OK)
 		{
@@ -20,7 +18,7 @@ void co2Task_run()
 		co2 = mh_z19_getCo2Ppm;
 		printf("CO2: %d\n",co2);
 		vTaskDelay(pdMS_TO_TICKS(6000));
-	}
+	
 }
 
 // Creating task for CO2

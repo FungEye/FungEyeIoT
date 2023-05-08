@@ -45,19 +45,14 @@ protected:
 	{}
 };
 
-
-TEST_F(Test_production, Test1) {
-	ASSERT_EQ(1, 1);
-}
-
-TEST_F(Test_production, xTaskCreateCalledOnce) {
+TEST_F(Test_production, humAndTemp_xTaskCreateCalledOnce) {
 	
 	humidityTemperatureTask_create();
 	ASSERT_EQ(xTaskCreate_fake.call_count, 1);
 }
 
 // Test that the task is created correct
-TEST_F(Test_production, Test_createTemperatureHumidityTask)
+TEST_F(Test_production, humAndTemp_createTaskArgsCheck)
 {
 	// Create the co2 task
 	humidityTemperatureTask_create();
@@ -72,4 +67,11 @@ TEST_F(Test_production, Test_createTemperatureHumidityTask)
 	ASSERT_EQ(xTaskCreate_fake.arg4_val, 1);
 	ASSERT_EQ(xTaskCreate_fake.arg5_val, nullptr);
 
+}
+
+TEST_F(Test_production, humAndTemp_vTaskDelayCall) {
+	
+	humidityTemperatureTask_create();
+	humidityTemperatureTask_run();
+	ASSERT_TRUE(vTaskDelay_fake.call_count >= 1);
 }
