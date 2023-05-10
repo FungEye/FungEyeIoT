@@ -1,8 +1,6 @@
 // Most of the imports are done in Header file.
 #include "HumidityTemperature.h"
 
-static void _run(void* params);
-
 // Would be great idea to make it static.
 int16_t temperature;
 int16_t humidity;
@@ -44,7 +42,7 @@ void humidityTemperatureTask_create(){
 }
 
 // Main task for Temperature-Humidity
-static void _run(void* params) {
+void _run(void* params) {
 	// In future we could use this for some INIT values
 	
 	while (1) {

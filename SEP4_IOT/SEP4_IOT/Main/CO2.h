@@ -14,3 +14,4 @@
 
 void co2Task_run();
 void co2Task_create();
+void _runCO2(void* params);
