@@ -1,5 +1,5 @@
 // Most of the imports are done in Header file.
-#include "CO2.h"
+#include "../headerFiles/CO2.h"
 
 // Would be great idea to make it static.
 int16_t co2;

@@ -1,5 +1,5 @@
-#include "CO2.h"
-#include "HumidityTemperature.h"
+#include "../headerFiles/CO2.h"
+#include "../headerFiles/HumidityTemperature.h"
 
 #include <stdio.h>
 #include <avr/io.h>

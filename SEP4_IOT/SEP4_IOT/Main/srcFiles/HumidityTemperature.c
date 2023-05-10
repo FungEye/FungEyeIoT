@@ -1,5 +1,5 @@
 // Most of the imports are done in Header file.
-#include "HumidityTemperature.h"
+#include "../headerFiles/HumidityTemperature.h"
 
 // Would be great idea to make it static.
 int16_t temperature;

@@ -22,8 +22,8 @@ set(SOURCES_TEST
     tests.cpp
     testForCO2.cpp
     FreeRTOS_defs/FreeRTOS_FFF_MocksDefinitions.cpp
-    ../SEP4_IOT/SEP4_IOT/Main/HumidityTemperature.c
-    ../SEP4_IOT/SEP4_IOT/Main/CO2.c
+    ../SEP4_IOT/SEP4_IOT/Main/srcFiles/HumidityTemperature.c
+    ../SEP4_IOT/SEP4_IOT/Main/srcFiles/CO2.c
     ${SRCS}
 )
 
@@ -31,7 +31,7 @@ set(SOURCES_TEST
 # This makes the test.cpp files able to #include target libraries without errors.  
 include_directories(
   FreeRTOS_defs  # Mock and FreeRTOS definitions
-  ../SEP4_IOT/SEP4_IOT/Main
+  ../SEP4_IOT/SEP4_IOT/Main/headerFiles
   ../SEP4_IOT/SEP4_IOT/drivers
 )
 
