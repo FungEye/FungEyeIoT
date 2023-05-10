@@ -44,9 +44,8 @@ float luxValue;
 
 			if (TSL2591_OK == tsl2591_getLux(&luxValue))
 			{
-				// Lux value available, use 'luxValue' variable
-				printf("Lux: %5.4f\n", luxValue);
-
+				int16_t luxInInt= (int16_t)luxValue;
+				printf("Lux:%d\n", luxInInt);
 			}
 			break;
 

@@ -7,9 +7,6 @@
 
 #include "../headerFiles/Light.h"
 
-// Define variables to store light data
-extern float luxValue;
-
 
 void lightTask_run(){
 	if ( TSL2591_OK == tsl2591_enable() )
@@ -25,11 +22,9 @@ void lightTask_run(){
 		else
 		{
 			//The light data will be ready after the driver calls the call back function with TSL2591_DATA_READY.
-			printf("Lux: %f", luxValue);
-			//puts("Lux: %d", luxValue);
 		}
 	
-	tsl2591_disable();
+	//tsl2591_disable();
 
 	
 }
@@ -52,5 +47,6 @@ void _runLight(void* params){
 	
 	while (1) {
 		lightTask_run();
+	    vTaskDelay(pdMS_TO_TICKS(6000));
 	}
 }

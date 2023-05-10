@@ -149,8 +149,7 @@ ADDITIONAL_DEPENDENCIES:=
 
 OUTPUT_FILE_DEP:= ./makedep.mk
 
-LIB_DEP+=  \
-../drivers/libIotLibrary.a
+LIB_DEP+= 
 
 LINKER_SCRIPT_DEP+= 
 
