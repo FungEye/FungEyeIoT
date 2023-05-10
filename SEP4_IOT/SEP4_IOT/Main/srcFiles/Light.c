@@ -13,6 +13,7 @@ int16_t luxInInt;
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
 {
+		vTaskDelay(pdMS_TO_TICKS(6000));
 		switch (rc)
 		{
 			case TSL2591_DATA_READY:
@@ -88,6 +89,5 @@ void _runLight(void* params){
 	
 	while (1) {
 		lightTask_run();
-	    vTaskDelay(pdMS_TO_TICKS(6000));
 	}
 }
