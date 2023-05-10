@@ -8,6 +8,7 @@
 #include "../headerFiles/Light.h"
 
 float luxValue;
+int16_t luxInInt;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
@@ -34,7 +35,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
 
 			if (TSL2591_OK == tsl2591_getLux(&luxValue))
 			{
-				int16_t luxInInt= (int16_t)luxValue;
+				luxInInt= (int16_t)luxValue;
 				printf("Lux:%d\n", luxInInt);
 			}
 			break;

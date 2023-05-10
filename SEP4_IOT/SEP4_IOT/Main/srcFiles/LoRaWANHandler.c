@@ -22,7 +22,7 @@ static lora_driver_payload_t _uplink_payload;
 extern int16_t temperature;
 extern int16_t humidity;
 extern int16_t co2;
-extern float luxValue;
+extern int16_t luxInInt;
 
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority)
 {
@@ -137,6 +137,7 @@ void lora_handler_task( void *pvParameters )
 		uint16_t hum = humidity; // measured humidity
 		int16_t temp = temperature; // measured temp
 		uint16_t co2_ppm = co2; // measured CO2
+		uint16_t lux = luxInInt;
 		
 		printf("TEMP BEFORE SEND: %d\n",temperature);
 		printf("HUMID BEFORE SEND: %d\n",humidity);
@@ -147,8 +148,8 @@ void lora_handler_task( void *pvParameters )
 		_uplink_payload.bytes[3] = temp & 0xFF;
 		_uplink_payload.bytes[4] = co2_ppm >> 8;
 		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
-		_uplink_payload.bytes[6] = co2_ppm >> 8; // TODO change to light from co2_ppm
-		_uplink_payload.bytes[7] = co2_ppm & 0xFF;
+		_uplink_payload.bytes[6] = lux >> 8; // TODO change to light from co2_ppm
+		_uplink_payload.bytes[7] = lux & 0xFF;
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
