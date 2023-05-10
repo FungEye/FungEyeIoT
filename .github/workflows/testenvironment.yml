@@ -2,7 +2,7 @@ name: CMake Tests
 
 on:
   push:
-    branches: [develop, feature-testing-version2]
+    branches: [develop]
 
 jobs:
   build:
