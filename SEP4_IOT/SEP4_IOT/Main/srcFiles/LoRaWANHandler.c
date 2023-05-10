@@ -22,6 +22,7 @@ static lora_driver_payload_t _uplink_payload;
 extern int16_t temperature;
 extern int16_t humidity;
 extern int16_t co2;
+extern float luxValue;
 
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority)
 {
