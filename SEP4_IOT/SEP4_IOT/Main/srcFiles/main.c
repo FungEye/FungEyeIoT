@@ -68,6 +68,7 @@ static void _createTasks()
 {
 	co2Task_create();
 	humidityTemperatureTask_create();
+	lightTask_create();
 }
 
 
