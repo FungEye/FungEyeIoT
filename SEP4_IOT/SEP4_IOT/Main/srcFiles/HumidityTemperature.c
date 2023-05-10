@@ -5,6 +5,10 @@
 int16_t temperature;
 int16_t humidity;
 
+
+void initialize_HumidityTemperature(){
+	hih8120_initialise();
+}
 // Function responsible for measuring Humidity and Temperature.
 void humidityTemperatureTask_run()
 {

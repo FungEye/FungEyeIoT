@@ -15,4 +15,4 @@
 void lightTask_run();
 void lightTask_create();
 void _runLight(void* params);
-void tsl2591Callback(tsl2591_returnCode_t rc);
+void initialize_Light();

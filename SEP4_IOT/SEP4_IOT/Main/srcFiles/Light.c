@@ -7,6 +7,46 @@
 
 #include "../headerFiles/Light.h"
 
+float luxValue;
+
+// Callback function for TSL2591 driver
+void tsl2591Callback(tsl2591_returnCode_t rc)
+{
+		switch (rc)
+		{
+			case TSL2591_DATA_READY:
+			/*
+			if (TSL2591_OK == tsl2591_getFullSpectrumRaw(&fullRaw))
+			{
+				// Full spectrum raw data available, use 'fullRaw' variable
+			}
+
+			if (TSL2591_OK == tsl259_getVisibleRaw(&visibleRaw))
+			{
+				// Visible raw data available, use 'visibleRaw' variable
+			}
+
+			if (TSL2591_OK == tsl2591_getInfraredRaw(&infraredRaw))
+			{
+				// Infrared raw data available, use 'infraredRaw' variable
+			}
+			*/
+
+			if (TSL2591_OK == tsl2591_getLux(&luxValue))
+			{
+				int16_t luxInInt= (int16_t)luxValue;
+				printf("Lux:%d\n", luxInInt);
+			}
+			break;
+
+			// Handle other return codes if needed
+		}
+}
+	
+void initialize_Light(){
+	tsl2591_initialise(tsl2591Callback);
+}
+
 
 void lightTask_run(){
 	if ( TSL2591_OK == tsl2591_enable() )

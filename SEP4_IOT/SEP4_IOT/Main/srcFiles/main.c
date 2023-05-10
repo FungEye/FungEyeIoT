@@ -17,48 +17,12 @@
 
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
-float luxValue;
-
-// Callback function for TSL2591 driver
-	void tsl2591Callback(tsl2591_returnCode_t rc)
-	{
-		switch (rc)
-		{
-			case TSL2591_DATA_READY:
-			/*
-			if (TSL2591_OK == tsl2591_getFullSpectrumRaw(&fullRaw))
-			{
-				// Full spectrum raw data available, use 'fullRaw' variable
-			}
-
-			if (TSL2591_OK == tsl259_getVisibleRaw(&visibleRaw))
-			{
-				// Visible raw data available, use 'visibleRaw' variable
-			}
-
-			if (TSL2591_OK == tsl2591_getInfraredRaw(&infraredRaw))
-			{
-				// Infrared raw data available, use 'infraredRaw' variable
-			}
-			*/
-
-			if (TSL2591_OK == tsl2591_getLux(&luxValue))
-			{
-				int16_t luxInInt= (int16_t)luxValue;
-				printf("Lux:%d\n", luxInInt);
-			}
-			break;
-
-			// Handle other return codes if needed
-		}
-	}
 
 static void _initDrivers(void) {
 	puts("Initializing drivers...");
-	mh_z19_initialise(ser_USART3);
-	hih8120_initialise();
-	tsl2591_initialise(tsl2591Callback);
-	
+	initialize_CO2();
+	initialize_HumidityTemperature();
+	initialize_Light();	
 	lora_driver_initialise(ser_USART1, NULL); // Without down-link buffer
 }
 
