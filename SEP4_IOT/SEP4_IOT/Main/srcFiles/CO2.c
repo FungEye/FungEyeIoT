@@ -3,6 +3,8 @@
 
 // Would be great idea to make it static.
 int16_t co2;
+extern SemaphoreHandle_t semaphoreCO2;
+
 
 void initialize_CO2(){
 	mh_z19_initialise(ser_USART3);
@@ -12,7 +14,9 @@ void initialize_CO2(){
 void co2Task_run()	
 {
 	mh_z19_returnCode_t rc;
+		vTaskDelay(pdMS_TO_TICKS(6000));
 	
+		xSemaphoreTake(semaphoreCO2, portMAX_DELAY);
 		rc = mh_z19_takeMeassuring();
 		if (rc != MHZ19_OK)
 		{
@@ -20,7 +24,7 @@ void co2Task_run()
 		}
 		co2 = mh_z19_getCo2Ppm;
 		printf("CO2: %d\n",co2);
-		vTaskDelay(pdMS_TO_TICKS(6000));
+		xSemaphoreGive(semaphoreCO2);
 	
 }
 

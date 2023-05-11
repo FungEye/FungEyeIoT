@@ -12,6 +12,9 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
+#include <task.h>
+#include <semphr.h>
+
 // Parameters for OTAA join - You have got these in a mail from IHA
 #define LORA_appEUI "F2DDE2E826DE9BA5"
 #define LORA_appKEY "FA15F6404AD2D77F878514403C7422DD"
@@ -23,6 +26,12 @@ extern int16_t temperature;
 extern int16_t humidity;
 extern int16_t co2;
 extern int16_t luxInInt;
+
+//Semaphores
+extern SemaphoreHandle_t semaphoreTempHum;
+extern SemaphoreHandle_t semaphoreCO2;
+extern SemaphoreHandle_t semaphoreLight;
+
 
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority)
 {
@@ -134,10 +143,18 @@ void lora_handler_task( void *pvParameters )
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
 
 		// Some dummy payload
-		uint16_t hum = humidity; // measured humidity
-		int16_t temp = temperature; // measured temp
-		uint16_t co2_ppm = co2; // measured CO2
-		uint16_t lux = luxInInt;
+		xSemaphoreTake(semaphoreTempHum, portMAX_DELAY);
+			uint16_t hum = humidity; // measured humidity
+			int16_t temp = temperature; // measured temp
+		xSemaphoreGive(semaphoreTempHum);
+
+		xSemaphoreTake(semaphoreCO2, portMAX_DELAY);
+			uint16_t co2_ppm = co2; // measured CO2
+		xSemaphoreGive(semaphoreCO2);
+
+		xSemaphoreTake(semaphoreLight, portMAX_DELAY);
+			uint16_t lux = luxInInt;
+		xSemaphoreGive(semaphoreLight);
 		
 		printf("TEMP BEFORE SEND: %d\n",temperature);
 		printf("HUMID BEFORE SEND: %d\n",humidity);

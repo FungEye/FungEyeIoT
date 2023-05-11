@@ -9,6 +9,7 @@
 
 float luxValue;
 int16_t luxInInt;
+extern SemaphoreHandle_t semaphoreLight;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
@@ -58,6 +59,9 @@ void lightTask_run()
 		// The power-up command is now sent to the sensor
 		// It can be powered down with a call to tsl2591_disable()
 	}
+	vTaskDelay(pdMS_TO_TICKS(6000));
+
+	xSemaphoreTake(semaphoreLight, portMAX_DELAY);
 
 	if (TSL2591_OK != tsl2591_fetchData())
 	{
@@ -68,6 +72,8 @@ void lightTask_run()
 	{
 		// The light data will be ready after the driver calls the callback function with TSL2591_DATA_READY.
 	}
+
+	xSemaphoreGive(semaphoreLight);
 }
 
 void lightTask_create()

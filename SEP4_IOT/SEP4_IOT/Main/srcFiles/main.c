@@ -15,6 +15,13 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 
+#include "semphr.h"
+
+// Semaphoers
+SemaphoreHandle_t semaphoreTempHum;
+SemaphoreHandle_t semaphoreCO2;
+SemaphoreHandle_t semaphoreLight;
+
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
 
@@ -44,6 +51,13 @@ int main(void)
 	_createTasks();
 
 	status_leds_initialise(5); // Status LED driver - Priority 5. (LoRaWAN)
+
+	semaphoreTempHum = xSemaphoreCreateBinary();
+	semaphoreCO2 = xSemaphoreCreateBinary();
+	semaphoreLight = xSemaphoreCreateBinary();
+	xSemaphoreGive(semaphoreTempHum);
+	xSemaphoreGive(semaphoreCO2);
+	xSemaphoreGive(semaphoreLight);
 
 	printf("Starting...\n");
 	vTaskStartScheduler();
