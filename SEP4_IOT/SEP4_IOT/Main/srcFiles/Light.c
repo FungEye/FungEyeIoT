@@ -9,9 +9,6 @@
 
 float luxValue;
 int16_t luxInInt;
-uint16_t fullRaw;
-uint16_t visibleRaw;
-uint16_t infraredRaw;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
