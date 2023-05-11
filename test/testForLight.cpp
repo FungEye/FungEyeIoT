@@ -10,7 +10,9 @@ extern "C"
 }
 
 // Create Fake Driver functions
-//FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_initialise, (*)(tsl2591_returnCode_t));
+
+//cannot convert from 'overloaded-function' to 'fff_function_t'
+FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_initialise, tsl2591_returnCode_t);
 FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_destroy);
 FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_enable);
 FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_disable);
