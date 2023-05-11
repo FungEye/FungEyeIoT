@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\ninaw\OneDrive - ViaUC\Dokumenter\GitHub\FungEyeIoT\build\Debug\ZERO_CHECK</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\ninaw\OneDrive - ViaUC\Dokumenter\GitHub\FungEyeIoT\build\test\Debug\SEP4_IOT_TEST.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\ninaw\OneDrive - ViaUC\Dokumenter\GitHub\FungEyeIoT\build\Debug\ALL_BUILD</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles />
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>
