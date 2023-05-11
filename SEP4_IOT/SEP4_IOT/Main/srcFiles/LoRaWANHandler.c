@@ -141,6 +141,8 @@ void lora_handler_task( void *pvParameters )
 		
 		printf("TEMP BEFORE SEND: %d\n",temperature);
 		printf("HUMID BEFORE SEND: %d\n",humidity);
+		printf("HUMID BEFORE SEND: %d\n",co2_ppm);
+		printf("HUMID BEFORE SEND: %d\n",lux);
 
 		_uplink_payload.bytes[0] = hum >> 8;
 		_uplink_payload.bytes[1] = hum & 0xFF;

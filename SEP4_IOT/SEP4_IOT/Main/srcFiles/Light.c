@@ -9,6 +9,9 @@
 
 float luxValue;
 int16_t luxInInt;
+uint16_t fullRaw;
+uint16_t visibleRaw;
+uint16_t infraredRaw;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
@@ -17,7 +20,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
 		switch (rc)
 		{
 			case TSL2591_DATA_READY:
-			/*
+
 			if (TSL2591_OK == tsl2591_getFullSpectrumRaw(&fullRaw))
 			{
 				// Full spectrum raw data available, use 'fullRaw' variable
@@ -32,7 +35,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
 			{
 				// Infrared raw data available, use 'infraredRaw' variable
 			}
-			*/
+			
 
 			if (TSL2591_OK == tsl2591_getLux(&luxValue))
 			{
