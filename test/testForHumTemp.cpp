@@ -45,6 +45,12 @@ protected:
 	{}
 };
 
+TEST_F(Test_production, humAndTemp_initialization) {
+	
+	initialize_HumidityTemperature();
+	ASSERT_EQ(hih8120_initialise_fake.call_count, 1);
+}
+
 TEST_F(Test_production, humAndTemp_xTaskCreateCalledOnce) {
 	
 	humidityTemperatureTask_create();

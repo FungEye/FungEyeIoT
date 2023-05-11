@@ -14,3 +14,4 @@
 void humidityTemperatureTask_run();
 void humidityTemperatureTask_create();
 void _run(void* params);
+void initialize_HumidityTemperature();

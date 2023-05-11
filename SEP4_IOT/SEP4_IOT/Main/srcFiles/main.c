@@ -1,5 +1,6 @@
 #include "../headerFiles/CO2.h"
 #include "../headerFiles/HumidityTemperature.h"
+#include "../headerFiles/Light.h"
 
 #include <stdio.h>
 #include <avr/io.h>
@@ -19,8 +20,9 @@ void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
 
 static void _initDrivers(void) {
 	puts("Initializing drivers...");
-	mh_z19_initialise(ser_USART3);
-	hih8120_initialise();
+	initialize_CO2();
+	initialize_HumidityTemperature();
+	initialize_Light();	
 	lora_driver_initialise(ser_USART1, NULL); // Without down-link buffer
 }
 
@@ -29,6 +31,7 @@ static void _createTasks()
 {
 	co2Task_create();
 	humidityTemperatureTask_create();
+	lightTask_create();
 }
 
 

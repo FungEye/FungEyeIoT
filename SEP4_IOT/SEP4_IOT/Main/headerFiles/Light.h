@@ -9,10 +9,10 @@
 #include <semphr.h>
 #include <stdbool.h>
 #include <serial.h>
-#include <mh_z19.h>
+#include <tsl2591.h>
 
 
-void co2Task_run();
-void co2Task_create();
-void _runCO2(void* params);
-void initialize_CO2();
+void lightTask_run();
+void lightTask_create();
+void _runLight(void* params);
+void initialize_Light();

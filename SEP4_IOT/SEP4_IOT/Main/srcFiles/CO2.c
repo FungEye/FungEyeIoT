@@ -4,6 +4,9 @@
 // Would be great idea to make it static.
 int16_t co2;
 
+void initialize_CO2(){
+	mh_z19_initialise(ser_USART3);
+}
 
 // Function responsible for measuring CO2
 void co2Task_run()	
