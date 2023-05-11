@@ -5,6 +5,8 @@
 *  Author: Group 2x
 */
 
+#include "../headerFiles/LoRaWANHandler.h"
+
 void lora_handler_task( void *pvParameters );
 
 static lora_driver_payload_t _uplink_payload;
