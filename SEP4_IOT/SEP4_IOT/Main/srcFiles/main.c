@@ -1,6 +1,7 @@
 #include "../headerFiles/CO2.h"
 #include "../headerFiles/HumidityTemperature.h"
 #include "../headerFiles/Light.h"
+#include "../headerFiles/LoRaWANHandler.h"
 
 #include <stdio.h>
 #include <avr/io.h>
@@ -30,7 +31,7 @@ static void _initDrivers(void) {
     initialize_CO2();
     initialize_HumidityTemperature();
     initialize_Light();
-    lora_driver_initialise(ser_USART1, NULL); // Without down-link buffer
+    lora_initializer();
 }
 
 static void _createTasks() {
