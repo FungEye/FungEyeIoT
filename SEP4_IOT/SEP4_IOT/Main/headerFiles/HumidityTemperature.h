@@ -10,7 +10,7 @@
 #include <stdbool.h>
 #include <serial.h>
 #include <hih8120.h>
-
+#include <display_7seg.h>
 
 void humidityTemperatureTask_run();
 void humidityTemperatureTask_create();
