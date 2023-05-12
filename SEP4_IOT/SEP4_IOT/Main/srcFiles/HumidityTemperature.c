@@ -4,7 +4,7 @@
 // Would be great idea to make it static.
 int16_t temperature;
 int16_t humidity;
-extern SemaphoreHandle_t semaphoreTempHum;
+SemaphoreHandle_t semaphoreTempHum;
 
 void initialize_HumidityTemperature(){
 	hih8120_initialise();

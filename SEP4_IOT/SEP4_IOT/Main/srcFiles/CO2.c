@@ -3,7 +3,7 @@
 
 // Would be great idea to make it static.
 int16_t co2;
-extern SemaphoreHandle_t semaphoreCO2;
+SemaphoreHandle_t semaphoreCO2;
 
 
 void initialize_CO2(){
