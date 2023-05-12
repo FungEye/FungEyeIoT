@@ -77,3 +77,6 @@ dkms.conf
 # End of https://www.toptal.com/developers/gitignore/api/c,atmelstudio
 
 build/
+SEP4_IOT/.vs/SEP4_IOT/v14/.atsuo
+SEP4_IOT/SEP4_IOT/Debug/SEP4_IOT.lss
+SEP4_IOT/SEP4_IOT/Debug/SEP4_IOT.srec

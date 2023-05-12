@@ -11,6 +11,7 @@
 #include <serial.h>
 #include <hih8120.h>
 
+
 void humidityTemperatureTask_run();
 void humidityTemperatureTask_create();
 void _run(void* params);
