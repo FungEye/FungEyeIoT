@@ -4,7 +4,7 @@
 // Would be great idea to make it static.
 int16_t temperature;
 int16_t humidity;
-
+extern SemaphoreHandle_t semaphoreTempHum;
 
 void initialize_HumidityTemperature(){
 	hih8120_initialise();
@@ -12,6 +12,10 @@ void initialize_HumidityTemperature(){
 // Function responsible for measuring Humidity and Temperature.
 void humidityTemperatureTask_run()
 {
+	vTaskDelay(pdMS_TO_TICKS(6000));
+	
+		xSemaphoreTake(semaphoreTempHum, portMAX_DELAY);
+
 		if (hih8120_wakeup() == HIH8120_OK) {
 			vTaskDelay(pdMS_TO_TICKS(100));
 			
@@ -28,8 +32,7 @@ void humidityTemperatureTask_run()
 			printf("FAILED: to wakeup - Humidity-Temperature");
 			}
 			
-	
-		vTaskDelay(pdMS_TO_TICKS(6000));
+			xSemaphoreGive(semaphoreTempHum);
 }
 
 // Creating task for Humidity and Temperature.
