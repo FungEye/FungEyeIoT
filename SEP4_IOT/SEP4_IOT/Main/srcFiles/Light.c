@@ -9,7 +9,7 @@
 
 float luxValue;
 int16_t luxInInt;
-extern SemaphoreHandle_t semaphoreLight;
+SemaphoreHandle_t semaphoreLight;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
