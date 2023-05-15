@@ -31,11 +31,6 @@ static void _initDrivers(void) {
     initialize_HumidityTemperature();
     initialize_Light();
     lora_driver_initialise(ser_USART1, NULL); // Without down-link buffer
-	// Here the call back function is not needed
-	display_7seg_initialise(NULL);	
-	// Power up the display
-	display_7seg_powerUp();
-
 }
 
 static void _createTasks() {
