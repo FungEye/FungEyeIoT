@@ -11,21 +11,24 @@ void initialize_CO2() {
 
 // Function responsible for measuring CO2
 void co2Task_run() {
+    mh_z19_returnCode_t rc;
     vTaskDelay(pdMS_TO_TICKS(6000));
 
-   mh_z19_returnCode_t rc;
-	
-		rc = mh_z19_takeMeassuring();
-		if (rc != MHZ19_OK)
-		{
-			puts("CO2 MEASURING FAILED");
-		}
-		co2 = mh_z19_getCo2Ppm;
-		printf("CO2: %d\n",co2);
-		vTaskDelay(pdMS_TO_TICKS(6000));
-		
+    xSemaphoreTake(semaphoreCO2, portMAX_DELAY);
+    rc = mh_z19_takeMeassuring();
+    if (rc != MHZ19_OK) {
+        puts("CO2 MEASURING FAILED");
+    }
+    else {
+        rc = mh_z19_getCo2Ppm(&co2);
+        if (rc == MHZ19_OK) {
+            printf("CO2: %d\n", co2);
+        }
+        else {
+            puts("CO2 GET VALUE FAILED");
+        }
+    }
     xSemaphoreGive(semaphoreCO2);
-	
 }
 
 // Creating task for CO2, called from main.c
