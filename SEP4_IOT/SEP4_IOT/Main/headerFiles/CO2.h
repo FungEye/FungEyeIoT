@@ -13,7 +13,6 @@
 
 
 void co2Task_run();
-void myCo2CallBack(uint16_t ppm);
 void co2Task_create();
 void _runCO2(void* params);
 void initialize_CO2();
