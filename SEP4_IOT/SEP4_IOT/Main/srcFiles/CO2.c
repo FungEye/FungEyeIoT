@@ -7,11 +7,19 @@ SemaphoreHandle_t semaphoreCO2;
 
 void initialize_CO2() {
     mh_z19_initialise(ser_USART3);
+	mh_z19_injectCallBack(myCo2CallBack);
+}
+
+void myCo2CallBack(uint16_t ppm)
+{
+	co2 = ppm;
 }
 
 // Function responsible for measuring CO2
 void co2Task_run() {
     vTaskDelay(pdMS_TO_TICKS(6000));
+
+xSemaphoreTake(semaphoreCO2, portMAX_DELAY);
 
    mh_z19_returnCode_t rc;
 	
@@ -20,7 +28,8 @@ void co2Task_run() {
 		{
 			puts("CO2 MEASURING FAILED");
 		}
-		co2 = mh_z19_getCo2Ppm;
+		//co2 = mh_z19_getCo2Ppm;
+		mh_z19_getCo2Ppm;
 		printf("CO2: %d\n",co2);
 		vTaskDelay(pdMS_TO_TICKS(6000));
 		
