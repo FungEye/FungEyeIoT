@@ -294,6 +294,9 @@
     <Compile Include="Main\HeaderFiles\Light.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Main\HeaderFiles\LoRaWANHandler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Main\srcFiles\CO2.c">
       <SubType>compile</SubType>
     </Compile>

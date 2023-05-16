@@ -19,7 +19,7 @@ void initialize_CO2() {
 
 // Function responsible for measuring CO2
 void co2Task_run() {
-	vTaskDelay(pdMS_TO_TICKS(6000));
+  vTaskDelay(pdMS_TO_TICKS(6000));
 
 	xSemaphoreTake(semaphoreCO2, portMAX_DELAY);
 

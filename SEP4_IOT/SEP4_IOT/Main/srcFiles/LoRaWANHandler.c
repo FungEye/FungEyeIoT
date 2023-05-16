@@ -6,8 +6,10 @@
 */
 
 #include "../headerFiles/LoRaWANHandler.h"
+//#include <task.h> // just added
 
 void lora_handler_task( void *pvParameters );
+void lora_downlink_task(void *pvParameters);
 
 static lora_driver_payload_t _uplink_payload;
 extern int16_t temperature;
@@ -15,11 +17,26 @@ extern int16_t humidity;
 extern int16_t co2;
 extern int16_t luxInInt;
 
+MessageBufferHandle_t downLinkMessageBufferHandle; // Here I make room for two downlink messages in the message buffer
+
+void lora_initializer(){
+	downLinkMessageBufferHandle  = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+	lora_driver_initialise(ser_USART1, downLinkMessageBufferHandle); // The parameter is the USART port the RN2483 module is connected to - in this case USART1 - here no message buffer for down-link messages are defined
+}
+
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority)
-{
+{	
 	xTaskCreate(
 	lora_handler_task
 	,  "LRHand"  // A name just for humans
+	,  configMINIMAL_STACK_SIZE+200  // This stack size can be checked & adjusted by reading the Stack Highwater
+	,  NULL
+	,  lora_handler_task_priority  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+	,  NULL );
+	
+	xTaskCreate(
+	lora_downlink_task
+	,  "Downlink"  // A name just for humans
 	,  configMINIMAL_STACK_SIZE+200  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
 	,  lora_handler_task_priority  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
@@ -146,5 +163,37 @@ void lora_handler_task( void *pvParameters )
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+	}
+}
+
+/*-----------------------------------------------------------*/
+void lora_downlink_task( void *pvParameters )
+{
+	uint16_t maxHumSetting; // Max Humidity
+	int16_t maxTempSetting; // Max Temperature
+	
+	// Hardware reset of LoRaWAN transceiver
+	lora_driver_resetRn2483(1);
+	vTaskDelay(2);
+	lora_driver_resetRn2483(0);
+	// Give it a chance to wakeup
+	vTaskDelay(150);
+
+	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
+
+	
+	for(;;){
+		lora_driver_payload_t downlinkPayload;
+		
+		// this code must be in the loop of a FreeRTOS task!
+		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
+		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
+		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.bytes[1]); // Just for Debug
+		if (4 == downlinkPayload.len) // Check that we have got the expected 4 bytes
+		{
+			// decode the payload into our variales
+			maxHumSetting = (downlinkPayload.bytes[0] << 8) + downlinkPayload.bytes[1];
+			maxTempSetting = (downlinkPayload.bytes[2] << 8) + downlinkPayload.bytes[3];
+		}
 	}
 }

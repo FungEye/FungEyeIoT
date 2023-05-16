@@ -61,16 +61,16 @@ void lightTask_run()
 
     if (fetchDataStatus == TSL2591_OK)
     {
-        printf("Light data fetched!\n");
+       // printf("Light data fetched!\n");
         // Process the fetched light data here
     }
     else if (fetchDataStatus == TSL2591_BUSY)
     {
-        printf("Light sensor busy\n");
+      //  printf("Light sensor busy\n");
     }
     else if (fetchDataStatus == TSL2591_DRIVER_NOT_INITIALISED)
     {
-        printf("Light driver not initialized\n");
+      //  printf("Light driver not initialized\n");
     }
 
     xSemaphoreGive(semaphoreLight);
