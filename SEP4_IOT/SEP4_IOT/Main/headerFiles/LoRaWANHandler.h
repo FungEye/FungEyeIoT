@@ -14,6 +14,7 @@
 
 #include <lora_driver.h>
 #include <status_leds.h>
+#include "Servo.h"
 
 // Parameters for OTAA join - You have got these in a mail from IHA
 #define LORA_appEUI "F2DDE2E826DE9BA5"

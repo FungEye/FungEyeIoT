@@ -32,8 +32,8 @@ void co2Task_run() {
 	}
 	//co2 = mh_z19_getCo2Ppm;
 	mh_z19_getCo2Ppm;
-	printf("CO2: %d\n",co2);
-	vTaskDelay(pdMS_TO_TICKS(6000));
+	//printf("CO2: %d\n",co2);
+	vTaskDelay(pdMS_TO_TICKS(2000)); // TO CHANGE TO 6000
 	
 	xSemaphoreGive(semaphoreCO2);
 	

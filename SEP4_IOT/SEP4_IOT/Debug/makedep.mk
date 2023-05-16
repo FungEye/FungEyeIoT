@@ -34,3 +34,5 @@ Main\srcFiles\LoRaWANHandler.c
 
 Main\srcFiles\main.c
 
+Main\srcFiles\Servo.c
+

@@ -297,6 +297,9 @@
     <Compile Include="Main\HeaderFiles\LoRaWANHandler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Main\HeaderFiles\Servo.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Main\srcFiles\CO2.c">
       <SubType>compile</SubType>
     </Compile>
@@ -310,6 +313,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Main\srcFiles\main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Main\srcFiles\Servo.c">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
