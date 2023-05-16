@@ -134,7 +134,7 @@ void lora_handler_task( void *pvParameters )
 	_uplink_payload.portNo = 2;
 
 	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
+	const TickType_t xFrequency = pdMS_TO_TICKS(100000UL); // Upload message every 5 minutes (300000 ms)
 	xLastWakeTime = xTaskGetTickCount();
 	
 	for(;;)
@@ -185,15 +185,19 @@ void lora_downlink_task( void *pvParameters )
 		// this code must be in the loop of a FreeRTOS task!
 		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
 		
-		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
-	
+		printf("DOWN LINK: from port: %d with %d bytes received! [0]", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
+		printf("DOWN LINK: from port: %d with %d bytes received!  [1]", downlinkPayload.portNo, downlinkPayload.bytes[1]); // Just for Debug
+			
 		if (0 == downlinkPayload.bytes[0]) // Check that we have got the expected 4 bytes
 		{
 			servo_close();
+			vTaskDelay(pdMS_TO_TICKS(1000));
 			printf("Closing servo !!!");
 		}
 		else if(1 == downlinkPayload.bytes[0]){
 			servo_open();
+			vTaskDelay(pdMS_TO_TICKS(1000));
+			
 			printf("Opening servo !!!");
 		}
 		else{

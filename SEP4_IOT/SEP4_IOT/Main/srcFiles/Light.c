@@ -20,7 +20,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
             if (TSL2591_OK == tsl2591_getLux(&luxValue))
             {
                 luxInInt = (uint16_t)luxValue;
-                printf("\nLux: %u\n", luxInInt);
+                //printf("\nLux: %u\n", luxInInt);
             }
             break;
 
@@ -61,7 +61,7 @@ void lightTask_run()
 
     if (fetchDataStatus == TSL2591_OK)
     {
-        printf("Light data fetched!\n");
+        //printf("Light data fetched!\n");
          //Process the fetched light data here
     }
     else if (fetchDataStatus == TSL2591_BUSY)
