@@ -169,9 +169,6 @@ void lora_handler_task( void *pvParameters )
 /*-----------------------------------------------------------*/
 void lora_downlink_task( void *pvParameters )
 {
-	uint16_t maxHumSetting; // Max Humidity
-	int16_t maxTempSetting; // Max Temperature
-	
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
@@ -187,13 +184,20 @@ void lora_downlink_task( void *pvParameters )
 		
 		// this code must be in the loop of a FreeRTOS task!
 		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
+		
 		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
-		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.bytes[1]); // Just for Debug
-		if (4 == downlinkPayload.len) // Check that we have got the expected 4 bytes
+	
+		if (0 == downlinkPayload.bytes[0]) // Check that we have got the expected 4 bytes
 		{
-			// decode the payload into our variales
-			maxHumSetting = (downlinkPayload.bytes[0] << 8) + downlinkPayload.bytes[1];
-			maxTempSetting = (downlinkPayload.bytes[2] << 8) + downlinkPayload.bytes[3];
+			servo_close();
+			printf("Closing servo !!!");
+		}
+		else if(1 == downlinkPayload.bytes[0]){
+			servo_open();
+			printf("Opening servo !!!");
+		}
+		else{
+			printf("SERVO UNKNOWN VALUE");
 		}
 	}
 }

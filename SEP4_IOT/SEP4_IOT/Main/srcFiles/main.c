@@ -32,6 +32,7 @@ static void _initDrivers(void) {
     initialize_HumidityTemperature();
     initialize_Light();
     lora_initializer();
+	initialize_Servo();
 }
 
 static void _createTasks() {
