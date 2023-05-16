@@ -22,9 +22,11 @@ FetchContent_MakeAvailable(googletest )
 set(SOURCES_TEST
     testForHumTemp.cpp
     # testForCO2.cpp
+    testForLight.cpp
     FreeRTOS_defs/FreeRTOS_FFF_MocksDefinitions.cpp
     ../SEP4_IOT/SEP4_IOT/Main/srcFiles/HumidityTemperature.c
     # ../SEP4_IOT/SEP4_IOT/Main/srcFiles/CO2.c
+    ../SEP4_IOT/SEP4_IOT/Main/srcFiles/Light.c
     ${SRCS}
 )
 

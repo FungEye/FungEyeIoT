@@ -92,7 +92,7 @@ TEST_F(Test_production, light_createTaskArgsCheck)
 
 }
 
-TEST_F(Test_production, humAndTemp_vTaskDelayCallArgs) {
+TEST_F(Test_production, light_vTaskDelayCallArgs) {
 	lightTask_create();
 	lightTask_run();
 
