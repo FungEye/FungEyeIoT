@@ -23,13 +23,13 @@ void humidityTemperatureTask_run()
 				vTaskDelay(pdMS_TO_TICKS(50));
 				humidity = hih8120_getHumidityPercent_x10();
 				temperature = hih8120_getTemperature_x10();
-				printf("TEMP: %d\n",temperature);
-				printf("HUMID: %d\n",humidity);
+				//printf("TEMP: %d\n",temperature);
+				//printf("HUMID: %d\n",humidity);
 				} else {
-				printf("FAILED: to measure - Humidity-Temperature");
+			//	printf("FAILED: to measure - Humidity-Temperature");
 			}
 			} else {
-			printf("FAILED: to wakeup - Humidity-Temperature");
+			//printf("FAILED: to wakeup - Humidity-Temperature");
 			}
 			
 			xSemaphoreGive(semaphoreTempHum);

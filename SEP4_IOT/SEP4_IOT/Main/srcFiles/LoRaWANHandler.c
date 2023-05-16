@@ -6,6 +6,7 @@
 */
 
 #include "../headerFiles/LoRaWANHandler.h"
+//#include <task.h> // just added
 
 void lora_handler_task( void *pvParameters );
 void lora_downlink_task(void *pvParameters);
@@ -181,12 +182,13 @@ void lora_downlink_task( void *pvParameters )
 	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 
 	
-	while(1){
+	for(;;){
 		lora_driver_payload_t downlinkPayload;
 		
 		// this code must be in the loop of a FreeRTOS task!
 		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
-		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len); // Just for Debug
+		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
+		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.bytes[1]); // Just for Debug
 		if (4 == downlinkPayload.len) // Check that we have got the expected 4 bytes
 		{
 			// decode the payload into our variales

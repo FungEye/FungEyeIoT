@@ -22,10 +22,10 @@ void co2Task_run() {
     else {
         rc = mh_z19_getCo2Ppm(&co2);
         if (rc == MHZ19_OK) {
-            printf("CO2: %d\n", co2);
+        //    printf("CO2: %d\n", co2);
         }
         else {
-            puts("CO2 GET VALUE FAILED");
+         //   puts("CO2 GET VALUE FAILED");
         }
     }
     xSemaphoreGive(semaphoreCO2);
