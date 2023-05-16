@@ -10,7 +10,6 @@
 #include <stdbool.h>
 #include <serial.h>
 #include <mh_z19.h>
-#include "Servo.h" // TO DELETE
 
 
 void co2Task_run();

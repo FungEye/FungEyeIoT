@@ -23,7 +23,6 @@ void co2Task_run() {
 
 	xSemaphoreTake(semaphoreCO2, portMAX_DELAY);
 
-	servo_open(); // TO DELETE
 	mh_z19_returnCode_t rc;
 	
 	rc = mh_z19_takeMeassuring();
@@ -35,7 +34,6 @@ void co2Task_run() {
 	mh_z19_getCo2Ppm;
 	printf("CO2: %d\n",co2);
 	vTaskDelay(pdMS_TO_TICKS(2000)); // TO CHANGE TO 6000
-	servo_close(); // TO DELETE
 	
 	xSemaphoreGive(semaphoreCO2);
 	
