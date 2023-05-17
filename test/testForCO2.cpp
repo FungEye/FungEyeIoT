@@ -44,6 +44,13 @@ protected:
 	{}
 };
 
+TEST_F(Test_production, co2_initialization) {
+
+	initialize_CO2();
+    
+	ASSERT_EQ(mh_z19_initialise_fake.call_count, 1);
+}
+
 
 TEST_F(Test_production, co2_xTaskCreateCalledOnce) {
 	
