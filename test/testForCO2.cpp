@@ -9,7 +9,6 @@ extern "C"
 	#include "mh_z19.h"
 }
 
-
 // Additional type needed to be able to use callback in fff 
 typedef void (*my_callback)(uint16_t);
 
@@ -83,3 +82,33 @@ TEST_F(Test_production, co2_vTaskDelayCallArgs) {
 
     ASSERT_EQ(vTaskDelay_fake.arg0_val, pdMS_TO_TICKS(6000));
 }
+
+TEST_F(Test_production, co2_semaphoreCall){
+	//Set up
+	SemaphoreHandle_t semaphoreLight;
+	semaphoreLight = xSemaphoreCreateBinary();
+    xSemaphoreGive(semaphoreLight);
+
+	//clearing the call count before calling the function
+	xSemaphoreTake_fake.call_count = 0;
+	xSemaphoreGive_fake.call_count = 0;
+
+	co2Task_create();
+	co2Task_run();
+
+	ASSERT_EQ(xSemaphoreTake_fake.call_count, 1);
+	ASSERT_EQ(xSemaphoreTake_fake.arg0_val, semaphoreLight);
+	ASSERT_EQ(xSemaphoreTake_fake.arg1_val, portMAX_DELAY);
+	ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
+}
+
+// TEST_F(Test_production, co2_measurement) {
+// 	//setup
+// 	mh_z19_returnCode_t rc = MHZ19_OK;
+// 	mh_z19_takeMeassuring_fake.return_val = rc;
+	
+// 	co2Task_create();
+//     co2Task_run();
+
+//     ASSERT_EQ(vTaskDelay_fake.arg0_val, pdMS_TO_TICKS(6000));
+// }
