@@ -1,9 +1,7 @@
-/*
-* loraWANHandler.c
-*
-* Created: 12/04/2019 10:09:05
-*  Author: Group 2x
-*/
+/**
+ * @file LoRaWANHandler.c
+ * @brief Source file for all lora related commuications
+ */
 
 #include "../headerFiles/LoRaWANHandler.h"
 //#include <task.h> // just added

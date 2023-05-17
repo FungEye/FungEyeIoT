@@ -1,3 +1,8 @@
+/**
+ * @file Servo.c
+ * @brief Source file for servo related operations
+ */
+
 #include "../headerFiles/Servo.h"
 
 void initialize_Servo(){
