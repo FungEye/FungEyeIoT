@@ -39,6 +39,12 @@
 // FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_getRn2483Hweui, char);
 // FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_rn2483GetVdd, char);
 // FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_rn2483Reboot);
+// FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_rn2483FactoryReset);
+// FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_sleep, uint32_t);
+// FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_saveMac);
+// FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_pauseMac);
+// FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_resumeMac);
+
 
 
 // // Create Test fixture and Reset all Mocks before each test
@@ -47,6 +53,40 @@
 // protected:
 // 	void SetUp() override
 // 	{
+//         RESET_FAKE(lora_driver_getMaxPayloadSize);
+//         RESET_FAKE(lora_driver_initialise);
+//         RESET_FAKE(lora_driver_setOtaaIdentity);
+//         RESET_FAKE(lora_driver_configureToEu868);
+//         RESET_FAKE(lora_driver_mapReturnCodeToText);
+//         RESET_FAKE(lora_driver_setAbpIdentity);
+//         RESET_FAKE(lora_driver_join);
+//         RESET_FAKE(lora_driver_sendUploadMessage);
+//         RESET_FAKE(lora_driver_setDeviceIdentifier);
+//         RESET_FAKE(lora_driver_setApplicationIdentifier);
+//         RESET_FAKE(lora_driver_setApplicationKey);
+//         RESET_FAKE(lora_driver_setNetworkSessionKey);
+//         RESET_FAKE(lora_driver_setApplicationSessionKey);
+//         RESET_FAKE(lora_driver_setDeviceAddress);
+//         RESET_FAKE(lora_driver_setDataRate);
+//         RESET_FAKE(lora_driver_getDataRate);
+//         RESET_FAKE(lora_driver_setAdaptiveDataRate);
+//         RESET_FAKE(lora_driver_getAdaptiveDataRate);
+//         RESET_FAKE(lora_driver_setReceiveDelay);
+//         RESET_FAKE(lora_driver_setAutomaticReply);
+//         RESET_FAKE(lora_driver_getAutomaticReply);
+//         RESET_FAKE(lora_driver_setLinkCheckInterval);
+//         RESET_FAKE(lora_driver_getLinkCheckResult);
+//         RESET_FAKE(lora_driver_setSpreadingFactor);
+//         RESET_FAKE(lora_driver_resetRn2483);
+//         RESET_FAKE(lora_driver_flushBuffers);
+//         RESET_FAKE(lora_driver_getRn2483Hweui);
+//         RESET_FAKE(lora_driver_rn2483GetVdd);
+//         RESET_FAKE(lora_driver_rn2483Reboot);
+//         RESET_FAKE(lora_driver_rn2483FactoryReset);
+//         RESET_FAKE(lora_driver_sleep);
+//         RESET_FAKE(lora_driver_saveMac);
+//         RESET_FAKE(lora_driver_pauseMac);
+//         RESET_FAKE(lora_driver_resumeMac);
 // 		RESET_FAKE(xTaskCreate);
 // 		RESET_FAKE(xTaskGetTickCount);
 // 		RESET_FAKE(xTaskDelayUntil);
@@ -56,5 +96,6 @@
 // 	{}
 // };
 
-
-
+// TEST_F(Test_production, lora_initialization) {
+// 	ASSERT_EQ(1, 1);
+// }
