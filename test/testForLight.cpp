@@ -9,8 +9,6 @@ extern "C"
 	#include "tsl2591.h"
 }
 
-
-
 // Additional type needed to be able to use callback in fff 
 typedef void (*callback_func)(tsl2591_returnCode_t);
 
@@ -30,6 +28,7 @@ FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_getInfraredRaw, uint16_t*);
 FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_getFullSpectrumRaw, uint16_t*);
 FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_getCombinedDataRaw, tsl2591_combinedData_t*);
 FAKE_VALUE_FUNC(tsl2591_returnCode_t, tsl2591_getLux, float*);
+//FAKE_VOID_FUNC(tsl2591Callback, tsl2591_returnCode_t);
 
 
 // Create Test fixture and Reset all Mocks before each test
@@ -38,7 +37,6 @@ class Test_production : public ::testing::Test
 protected:
 	void SetUp() override
 	{
-		RESET_FAKE(xTaskCreate);
 		RESET_FAKE(tsl2591_initialise);
 		RESET_FAKE(tsl2591_destroy);
 		RESET_FAKE(tsl2591_enable);
@@ -54,19 +52,23 @@ protected:
         RESET_FAKE(tsl2591_getFullSpectrumRaw);
         RESET_FAKE(tsl2591_getCombinedDataRaw);
         RESET_FAKE(tsl2591_getLux);
+		
+		RESET_FAKE(xTaskCreate);
 		RESET_FAKE(xTaskGetTickCount);
 		RESET_FAKE(xTaskDelayUntil);
+		RESET_FAKE(xSemaphoreTake);
+		//RESET_FAKE(tsl2591Callback);
 		FFF_RESET_HISTORY();
 	}
 	void TearDown() override
-	{}
+	{
+	}
 };
 
-// TEST_F(Test_production, light_sensorInit) {
-	
-// 	initialize_Light();
-// 	ASSERT_EQ(tsl2591_initialise.call_count, 1);
-// }
+TEST_F(Test_production, light_sensorInit) {
+	initialize_Light();
+	ASSERT_EQ(tsl2591_initialise_fake.call_count, 1);
+}
 
 TEST_F(Test_production, light_xTaskCreateCalledOnce) {
 	
@@ -92,10 +94,63 @@ TEST_F(Test_production, light_createTaskArgsCheck)
 
 }
 
+TEST_F(Test_production, light_semaphoreCall){
+	//Set up
+	SemaphoreHandle_t semaphoreLight;
+	semaphoreLight = xSemaphoreCreateBinary();
+    xSemaphoreGive(semaphoreLight);
+
+	//clearing the call count before calling the function
+	xSemaphoreTake_fake.call_count = 0;
+	xSemaphoreGive_fake.call_count = 0;
+
+	lightTask_create();
+	lightTask_run();
+
+	ASSERT_EQ(xSemaphoreTake_fake.call_count, 1);
+	ASSERT_EQ(xSemaphoreTake_fake.arg0_val, semaphoreLight);
+	ASSERT_EQ(xSemaphoreTake_fake.arg1_val, portMAX_DELAY);
+	ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
+}
+
+TEST_F(Test_production, light_measurementRun){
+	//clearing call count
+	tsl2591_fetchData_fake.call_count = 0;
+	
+	lightTask_create();
+	lightTask_run();
+
+	tsl2591_returnCode_t returnCode = TSL2591_OK;
+	tsl2591_enable_fake.return_val = returnCode;
+
+	ASSERT_EQ(tsl2591_enable_fake.return_val, TSL2591_OK);
+	ASSERT_EQ(tsl2591_fetchData_fake.call_count, 1);
+}
+
+TEST_F(Test_production, light_measurementCallback){
+	//clearing call count
+	tsl2591_getLux_fake.call_count = 0;
+	
+	//Setup
+	tsl2591_returnCode_t rc = TSL2591_DATA_READY;
+	tsl2591_returnCode_t getLuxSuccesful = TSL2591_OK;
+	float luxValue = 300;
+
+	lightTask_create();
+	lightTask_run();
+	tsl2591Callback(rc);
+
+	tsl2591_getLux_fake.arg0_val = &luxValue;
+	tsl2591_getLux_fake.return_val = getLuxSuccesful;
+	
+	ASSERT_EQ(tsl2591_getLux_fake.call_count, 1);
+	ASSERT_EQ((uint16_t)luxValue, 300);
+}
+
+
 TEST_F(Test_production, light_vTaskDelayCallArgs) {
 	lightTask_create();
 	lightTask_run();
 
 	ASSERT_EQ(vTaskDelay_fake.arg0_val, pdMS_TO_TICKS(6000));
 }
-
