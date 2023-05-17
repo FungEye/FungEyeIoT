@@ -156,7 +156,7 @@ void lora_handler_task( void *pvParameters )
 		_uplink_payload.bytes[3] = temp & 0xFF;
 		_uplink_payload.bytes[4] = co2_ppm >> 8;
 		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
-		_uplink_payload.bytes[6] = lux >> 8; // TODO change to light from co2_ppm
+		_uplink_payload.bytes[6] = lux >> 8;
 		_uplink_payload.bytes[7] = lux & 0xFF;
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL

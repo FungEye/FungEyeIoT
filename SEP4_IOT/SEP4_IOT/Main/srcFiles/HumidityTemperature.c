@@ -14,8 +14,9 @@ void initialize_HumidityTemperature() {
     hih8120_initialise();
 }
 
+
 void humidityTemperatureTask_run() {
-    vTaskDelay(pdMS_TO_TICKS(6000));
+    vTaskDelay(pdMS_TO_TICKS(6000));   // 6 seconds delay between measurements
 
     xSemaphoreTake(semaphoreTempHum, portMAX_DELAY);
 
@@ -24,7 +25,7 @@ void humidityTemperatureTask_run() {
 
         if (hih8120_measure() == HIH8120_OK) {
             vTaskDelay(pdMS_TO_TICKS(50));
-            humidity = hih8120_getHumidityPercent_x10();
+            humidity = hih8120_getHumidityPercent_x10(); // Use the 10x form to make sure there is not any weird meassurement converrtions
             temperature = hih8120_getTemperature_x10();
         } else {
             // printf("FAILED to measure humidity and temperature");
