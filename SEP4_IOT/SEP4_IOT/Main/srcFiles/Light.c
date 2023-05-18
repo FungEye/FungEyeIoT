@@ -17,7 +17,11 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
         case TSL2591_DATA_READY:
             if (TSL2591_OK == tsl2591_getLux(&luxValue))
             {
-                luxInInt = (uint16_t)luxValue;
+				 luxInInt = (uint16_t)luxValue;
+				if (luxInInt < 0)
+				{
+					luxInInt=0;
+				}
                 //printf("\nLux: %u\n", luxInInt);
             }
             break;
