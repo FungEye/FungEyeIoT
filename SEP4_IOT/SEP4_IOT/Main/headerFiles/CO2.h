@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <serial.h>
 #include <mh_z19.h>
+#include "Servo.h"
 
 /**
  * @brief Runs the CO2 task.

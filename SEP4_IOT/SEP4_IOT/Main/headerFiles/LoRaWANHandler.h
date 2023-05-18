@@ -17,6 +17,10 @@
 #include <status_leds.h>
 #include "Servo.h"
 
+// Parameters for OTAA join - You have got these in a mail from IHA
+#define LORA_appEUI "F2DDE2E826DE9BA5"
+#define LORA_appKEY "FA15F6404AD2D77F878514403C7422DD"
+
 /**
  * @brief LoRaWAN handler task.
  * 
