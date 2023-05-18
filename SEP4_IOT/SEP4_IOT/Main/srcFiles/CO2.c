@@ -34,8 +34,17 @@ void co2Task_run()
         puts("CO2 MEASURING FAILED");  // Something went wrong
     }
     co2 = mh_z19_getCo2Ppm;
-    vTaskDelay(pdMS_TO_TICKS(2000));
-
+	
+	if (co2 > 1000)
+	{
+		servo_open();
+		vTaskDelay(pdMS_TO_TICKS(2000));
+		servo_close();
+	}else
+	{
+		vTaskDelay(pdMS_TO_TICKS(2000));
+	}
+    
     xSemaphoreGive(semaphoreCO2); // Give the measured value to the semaphore to access later in LoRaWAN
 }
 
