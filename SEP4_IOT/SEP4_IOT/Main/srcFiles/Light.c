@@ -14,27 +14,29 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
 {
     switch (rc)
     {
-        case TSL2591_DATA_READY:
-            if (TSL2591_OK == tsl2591_getLux(&luxValue))
-            {
-				 luxInInt = (uint16_t)luxValue;
-				if (luxInInt < 0)
-				{
-					luxInInt=0;
-				}
-            }
-            break;
+         case TSL2591_DATA_READY:
+         if ( TSL2591_OK == (rc = tsl2591_getLux(&luxValue)) )
+         {
+	         
+	         luxInInt = (int16_t) luxValue;
+	         printf("Lux: %d\n", luxInInt);
+         }
+         else if( TSL2591_OVERFLOW == rc )
+         {
+	         printf("Lux overflow - change gain and integration time\n");
+         }
+         break;
 
-        case TSL2591_OK:
-            // Last command performed successfully
-            break;
+         case TSL2591_OK:
+         // Last command performed successfully
+         break;
 
-        case TSL2591_DEV_ID_READY:
-            // Dev ID now fetched
-            break;
+         case TSL2591_DEV_ID_READY:
+         // Dev ID now fetched
+         break;
 
-        default:
-            break;
+         default:
+         break;
     }
 	printf("LUX: %u\n", luxValue);
 }
