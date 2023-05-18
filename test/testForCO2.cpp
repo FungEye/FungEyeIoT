@@ -103,6 +103,9 @@ TEST_F(Test_production, co2_semaphoreCall){
 }
 
 TEST_F(Test_production, co2_measurement) {
+	//clear call count
+	mh_z19_getCo2Ppm_fake.call_count = 0;
+
 	//setup
 	mh_z19_returnCode_t rc = MHZ19_OK;
 	mh_z19_takeMeassuring_fake.return_val = rc;
