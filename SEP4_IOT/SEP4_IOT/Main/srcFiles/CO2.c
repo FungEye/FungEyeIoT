@@ -33,7 +33,6 @@ void co2Task_run()
     {
         puts("CO2 MEASURING FAILED");  // Something went wrong
     }
-    //co2 = mh_z19_getCo2Ppm;
 	mh_z19_getCo2Ppm;
 	printf("CO2: %d \n", co2);
 	if (co2 > 1000)
