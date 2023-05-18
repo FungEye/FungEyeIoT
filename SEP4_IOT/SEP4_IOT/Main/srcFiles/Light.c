@@ -1,44 +1,40 @@
-/**
- * @file Light.c
- * @brief Source file for measuring Light.
- */
+/*
+ * Light.c
+ *
+ * Created: 10/05/2023 10:43:00
+ *  Author: ninaw
+ */ 
 
 #include "../headerFiles/Light.h"
 
-float luxValue; // Light intensity value in lux
-uint16_t luxInInt; // Light intensity value as an integer
-SemaphoreHandle_t semaphoreLight; // Semaphore for Light
+float luxValue;
+uint16_t luxInInt;
+SemaphoreHandle_t semaphoreLight;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
 {
     switch (rc)
     {
-         case TSL2591_DATA_READY:
-         if ( TSL2591_OK == (rc = tsl2591_getLux(&luxValue)) )
-         {
-	         
-	         luxInInt = (int16_t) luxValue;
-	         printf("Lux: %d\n", luxInInt);
-         }
-         else if( TSL2591_OVERFLOW == rc )
-         {
-	         printf("Lux overflow - change gain and integration time\n");
-         }
-         break;
+        case TSL2591_DATA_READY:
+            if (TSL2591_OK == tsl2591_getLux(&luxValue))
+            {
+                luxInInt = (uint16_t)luxValue;
+                printf("\nLux: %u\n", luxInInt);
+            }
+            break;
 
-         case TSL2591_OK:
-         // Last command performed successfully
-         break;
+        case TSL2591_OK:
+            // Last command performed successfully
+            break;
 
-         case TSL2591_DEV_ID_READY:
-         // Dev ID now fetched
-         break;
+        case TSL2591_DEV_ID_READY:
+            // Dev ID now fetched
+            break;
 
-         default:
-         break;
+        default:
+            break;
     }
-	printf("LUX: %u\n", luxValue);
 }
 
 void initialize_Light()
@@ -65,7 +61,7 @@ void lightTask_run()
 
     if (fetchDataStatus == TSL2591_OK)
     {
-        //printf("Light data fetched!\n");
+        printf("Light data fetched!\n");
          //Process the fetched light data here
     }
     else if (fetchDataStatus == TSL2591_BUSY)
@@ -87,8 +83,8 @@ void lightTask_create()
         "Light",                    // A name just for humans
         configMINIMAL_STACK_SIZE,   // This stack size can be checked & adjusted by reading the Stack Highwater
         NULL,                       // (void *pvParameters)
-        1,                          // The priority of the task
-        NULL                        // No TaskHandle created.
+        1,                          // the priority of the task
+        NULL
     );
 }
 
