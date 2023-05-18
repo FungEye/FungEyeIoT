@@ -75,9 +75,20 @@ TEST_F(Test_production, humAndTemp_createTaskArgsCheck)
 
 }
 
-TEST_F(Test_production, humAndTemp_vTaskDelayCallArgs) {
-	humidityTemperatureTask_create();
-	humidityTemperatureTask_run();
-	ASSERT_EQ(vTaskDelay_fake.arg0_val, pdMS_TO_TICKS(50));
-}
+TEST_F(Test_production, humAndTemp_measurement) {
 
+	//clearing call count
+	hih8120_getHumidityPercent_x10_fake.call_count = 0;
+	hih8120_getTemperature_x10_fake.call_count = 0;
+	
+	//setup
+	hih8120_driverReturnCode_t rc = HIH8120_OK;
+	hih8120_wakeup_fake.return_val = rc;
+	hih8120_measure_fake.return_val = rc;
+	
+	humidityTemperatureTask_create();
+    humidityTemperatureTask_run();
+
+    ASSERT_EQ(hih8120_getHumidityPercent_x10_fake.call_count, 1);
+	ASSERT_EQ(hih8120_getTemperature_x10_fake.call_count, 1);
+}
