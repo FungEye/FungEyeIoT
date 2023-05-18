@@ -7,6 +7,7 @@ extern "C"
 {
 	#include "CO2.h"
 	#include "mh_z19.h"
+	#include "rc_servo.h"
 }
 
 // Additional type needed to be able to use callback in fff 
@@ -20,6 +21,10 @@ FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, 	uint16_t *);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_setAutoCalibration, bool);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_calibrateZeroPoint);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_calibrateSpanPoint, uint16_t);
+
+//Servo functions
+FAKE_VOID_FUNC(rc_servo_initialise);
+FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
 
 // Create Test fixture and Reset all Mocks before each test
 class Test_production : public ::testing::Test
@@ -35,6 +40,10 @@ protected:
 		RESET_FAKE(mh_z19_setAutoCalibration);
 		RESET_FAKE(mh_z19_calibrateZeroPoint);
 		RESET_FAKE(mh_z19_calibrateSpanPoint);
+
+		RESET_FAKE(rc_servo_initialise);
+		RESET_FAKE(rc_servo_setPosition);
+
 		RESET_FAKE(xTaskGetTickCount);
 		RESET_FAKE(xTaskDelayUntil);
 		FFF_RESET_HISTORY();
