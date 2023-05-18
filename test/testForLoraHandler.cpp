@@ -7,6 +7,8 @@ extern "C"
 {
 	#include "LoRaWANHandler.h"
     #include "lora_driver.h"
+    #include "rc_servo.h"
+
 }
 
 // Create Fake functions
@@ -45,7 +47,7 @@ FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_saveMac);
 FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_pauseMac);
 FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_resumeMac);
 
-
+//Servo functions defined in testForCO2
 
 // Create Test fixture and Reset all Mocks before each test
 class Test_production : public ::testing::Test
@@ -87,6 +89,7 @@ protected:
         RESET_FAKE(lora_driver_saveMac);
         RESET_FAKE(lora_driver_pauseMac);
         RESET_FAKE(lora_driver_resumeMac);
+
 		RESET_FAKE(xTaskCreate);
 		RESET_FAKE(xTaskGetTickCount);
 		RESET_FAKE(xTaskDelayUntil);
