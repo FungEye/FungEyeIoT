@@ -27,6 +27,8 @@ void humidityTemperatureTask_run() {
             vTaskDelay(pdMS_TO_TICKS(50));
             humidity = hih8120_getHumidityPercent_x10(); // Use the 10x form to make sure there is not any weird meassurement converrtions
             temperature = hih8120_getTemperature_x10();
+			printf("TEMP: %d \n", temperature);
+			printf("HUM: %d \n", humidity);
         } else {
             // printf("FAILED to measure humidity and temperature");
         }

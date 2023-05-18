@@ -183,23 +183,20 @@ void lora_downlink_task( void *pvParameters )
 		// this code must be in the loop of a FreeRTOS task!
 		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
 		
-		printf("DOWN LINK: from port: %d with %d bytes received! [0]", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
-		printf("DOWN LINK: from port: %d with %d bytes received!  [1]", downlinkPayload.portNo, downlinkPayload.bytes[1]); // Just for Debug
+		printf("DOWN LINK: from port: %d with payload %d \n", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
 			
 		if (0 == downlinkPayload.bytes[0]) // Check that we have got the expected 4 bytes
 		{
 			servo_close();
-			vTaskDelay(pdMS_TO_TICKS(1000));
-			printf("Closing servo !!!");
+			printf("Closing servo !!!\n");
 		}
 		else if(1 == downlinkPayload.bytes[0]){
 			servo_open();
-			vTaskDelay(pdMS_TO_TICKS(1000));
 			
-			printf("Opening servo !!!");
+			printf("Opening servo !!!\n");
 		}
 		else{
-			printf("SERVO UNKNOWN VALUE");
+			printf("SERVO UNKNOWN VALUE\n");
 		}
 	}
 }
