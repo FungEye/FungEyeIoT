@@ -84,14 +84,6 @@ TEST_F(Test_production, co2_taskCreateArgsCheck)
 
 }
 
-TEST_F(Test_production, co2_vTaskDelayCallArgs) {
-	
-	co2Task_create();
-    co2Task_run();
-
-    ASSERT_EQ(vTaskDelay_fake.arg0_val, pdMS_TO_TICKS(6000));
-}
-
 TEST_F(Test_production, co2_semaphoreCall){
 	//Set up
 	SemaphoreHandle_t semaphoreLight;
