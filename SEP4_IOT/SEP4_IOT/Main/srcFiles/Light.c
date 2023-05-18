@@ -22,7 +22,6 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
 				{
 					luxInInt=0;
 				}
-                //printf("\nLux: %u\n", luxInInt);
             }
             break;
 
@@ -37,6 +36,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
         default:
             break;
     }
+	printf("LUX: %u\n", luxValue);
 }
 
 void initialize_Light()
