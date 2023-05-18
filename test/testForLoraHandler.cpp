@@ -100,5 +100,37 @@ protected:
 };
 
 TEST_F(Test_production, lora_initialization) {
-	ASSERT_EQ(1, 1);
+    //clearing call count
+    xMessageBufferCreate_fake.call_count = 0;
+    lora_driver_initialise_fake.call_count = 0;
+
+    lora_initializer();
+
+    //checking if we create a buffer handling downlink
+    ASSERT_EQ(xMessageBufferCreate_fake.call_count, 1);
+
+    //checking if we initialize the driver
+	ASSERT_EQ(lora_driver_initialise_fake.call_count, 1);
+}
+
+TEST_F(Test_production, lora_initializationTaskCreation) {
+
+    //clearing call count
+    xTaskCreate_fake.call_count = 0;
+
+    //setup
+    UBaseType_t lora_handler_task_priority = 1;
+
+    //test
+    lora_handler_initialise(lora_handler_task_priority);
+
+    // Is xTaskCreate called?
+	ASSERT_EQ(xTaskCreate_fake.call_count, 1);
+	// Check all arguments to xTaskCreate
+	ASSERT_EQ(xTaskCreate_fake.arg0_val, &lora_handler_task);
+	ASSERT_EQ(strncmp(xTaskCreate_fake.arg1_val, "LRHand", 8), 0);
+	ASSERT_EQ(xTaskCreate_fake.arg2_val, configMINIMAL_STACK_SIZE+200);
+	ASSERT_EQ(xTaskCreate_fake.arg3_val, nullptr);
+	ASSERT_EQ(xTaskCreate_fake.arg4_val, lora_handler_task_priority);
+	ASSERT_EQ(xTaskCreate_fake.arg5_val, nullptr);
 }
