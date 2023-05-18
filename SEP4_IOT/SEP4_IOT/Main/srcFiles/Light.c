@@ -1,15 +1,13 @@
-/*
- * Light.c
- *
- * Created: 10/05/2023 10:43:00
- *  Author: ninaw
- */ 
+/**
+ * @file Light.c
+ * @brief Source file for measuring Light.
+ */
 
 #include "../headerFiles/Light.h"
 
-float luxValue;
-int16_t luxInInt;
-SemaphoreHandle_t semaphoreLight;
+float luxValue; // Light intensity value in lux
+uint16_t luxInInt; // Light intensity value as an integer
+SemaphoreHandle_t semaphoreLight; // Semaphore for Light
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
@@ -19,8 +17,8 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
         case TSL2591_DATA_READY:
             if (TSL2591_OK == tsl2591_getLux(&luxValue))
             {
-                luxInInt = (int16_t)luxValue;
-                printf("\nLux: %d\n", luxInInt);
+                luxInInt = (uint16_t)luxValue;
+                //printf("\nLux: %u\n", luxInInt);
             }
             break;
 
@@ -61,16 +59,16 @@ void lightTask_run()
 
     if (fetchDataStatus == TSL2591_OK)
     {
-       // printf("Light data fetched!\n");
-        // Process the fetched light data here
+        //printf("Light data fetched!\n");
+         //Process the fetched light data here
     }
     else if (fetchDataStatus == TSL2591_BUSY)
     {
-      //  printf("Light sensor busy\n");
+        printf("Light sensor busy\n");
     }
     else if (fetchDataStatus == TSL2591_DRIVER_NOT_INITIALISED)
     {
-      //  printf("Light driver not initialized\n");
+        printf("Light driver not initialized\n");
     }
 
     xSemaphoreGive(semaphoreLight);
@@ -83,8 +81,8 @@ void lightTask_create()
         "Light",                    // A name just for humans
         configMINIMAL_STACK_SIZE,   // This stack size can be checked & adjusted by reading the Stack Highwater
         NULL,                       // (void *pvParameters)
-        1,                          // the priority of the task
-        NULL
+        1,                          // The priority of the task
+        NULL                        // No TaskHandle created.
     );
 }
 

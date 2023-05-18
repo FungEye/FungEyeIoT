@@ -60,7 +60,8 @@ C_SRCS +=  \
 ../Main/srcFiles/HumidityTemperature.c \
 ../Main/srcFiles/Light.c \
 ../Main/srcFiles/LoRaWANHandler.c \
-../Main/srcFiles/main.c
+../Main/srcFiles/main.c \
+../Main/srcFiles/Servo.c
 
 
 PREPROCESSING_SRCS += 
@@ -85,7 +86,8 @@ Main/srcFiles/CO2.o \
 Main/srcFiles/HumidityTemperature.o \
 Main/srcFiles/Light.o \
 Main/srcFiles/LoRaWANHandler.o \
-Main/srcFiles/main.o
+Main/srcFiles/main.o \
+Main/srcFiles/Servo.o
 
 OBJS_AS_ARGS +=  \
 FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.o \
@@ -103,7 +105,8 @@ Main/srcFiles/CO2.o \
 Main/srcFiles/HumidityTemperature.o \
 Main/srcFiles/Light.o \
 Main/srcFiles/LoRaWANHandler.o \
-Main/srcFiles/main.o
+Main/srcFiles/main.o \
+Main/srcFiles/Servo.o
 
 C_DEPS +=  \
 FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.d \
@@ -121,7 +124,8 @@ Main/srcFiles/CO2.d \
 Main/srcFiles/HumidityTemperature.d \
 Main/srcFiles/Light.d \
 Main/srcFiles/LoRaWANHandler.d \
-Main/srcFiles/main.d
+Main/srcFiles/main.d \
+Main/srcFiles/Servo.d
 
 C_DEPS_AS_ARGS +=  \
 FreeRTOS/FreeRTOSTraceDriver/FreeRTOSTraceDriver.d \
@@ -139,7 +143,8 @@ Main/srcFiles/CO2.d \
 Main/srcFiles/HumidityTemperature.d \
 Main/srcFiles/Light.d \
 Main/srcFiles/LoRaWANHandler.d \
-Main/srcFiles/main.d
+Main/srcFiles/main.d \
+Main/srcFiles/Servo.d
 
 OUTPUT_FILE_PATH +=SEP4_IOT.elf
 
@@ -261,6 +266,13 @@ Main/srcFiles/LoRaWANHandler.o: ../Main/srcFiles/LoRaWANHandler.c
 	
 
 Main/srcFiles/main.o: ../Main/srcFiles/main.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG -DF_CPU=16000000L  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include" -I"../drivers" -I"../FreeRTOS/src"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+Main/srcFiles/Servo.o: ../Main/srcFiles/Servo.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG -DF_CPU=16000000L  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include" -I"../drivers" -I"../FreeRTOS/src"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
