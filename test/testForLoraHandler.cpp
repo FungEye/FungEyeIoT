@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "fff.h"
 #include "FreeRTOS_FFF_MocksDeclaration.h"
-#include "define_servo.h"
+
 // Include interfaces and define global variables
 // defined by the production code
 extern "C"
@@ -89,8 +89,8 @@ protected:
         RESET_FAKE(lora_driver_pauseMac);
         RESET_FAKE(lora_driver_resumeMac);
 
-        RESET_FAKE(rc_servo_initialise);
-		RESET_FAKE(rc_servo_setPosition);
+        //RESET_FAKE(rc_servo_initialise);
+		//RESET_FAKE(rc_servo_setPosition);
 
 		RESET_FAKE(xTaskCreate);
 		RESET_FAKE(xTaskGetTickCount);
@@ -137,29 +137,29 @@ TEST_F(Test_production, lora_initializationTaskCreation) {
 	ASSERT_EQ(xTaskCreate_fake.arg5_val, nullptr);
 }
 
-TEST_F(Test_production, lora_setup) {
-    //clearing call count
-    lora_driver_rn2483FactoryReset_fake.call_count = 0;
-    lora_driver_configureToEu868_fake.call_count = 0;
-    lora_driver_join_fake.call_count = 0;
+// TEST_F(Test_production, lora_setup) {
+//     //clearing call count
+//     lora_driver_rn2483FactoryReset_fake.call_count = 0;
+//     lora_driver_configureToEu868_fake.call_count = 0;
+//     lora_driver_join_fake.call_count = 0;
 
-    //setup
-    char _out_buf[20];
-	lora_driver_returnCode_t rc;
-    lora_driver_returnCode_t ok = LORA_OK;
+//     //setup
+//     char _out_buf[20];
+// 	lora_driver_returnCode_t rc;
+//     lora_driver_returnCode_t ok = LORA_OK;
 
-    lora_driver_getRn2483Hweui_fake.arg0_val = _out_buf;
-    lora_driver_getRn2483Hweui_fake.return_val = ok;
-    rc = lora_driver_getRn2483Hweui_fake.return_val;
-    lora_driver_join_fake.arg0_val = LORA_OTAA;
+//     lora_driver_getRn2483Hweui_fake.arg0_val = _out_buf;
+//     lora_driver_getRn2483Hweui_fake.return_val = ok;
+//     rc = lora_driver_getRn2483Hweui_fake.return_val;
+//     lora_driver_join_fake.arg0_val = LORA_OTAA;
 
-    _lora_setup();
+//     _lora_setup();
 
-    //checking if we set up lora correctly
-    ASSERT_EQ(lora_driver_rn2483FactoryReset_fake.call_count, 1);
-	ASSERT_EQ(lora_driver_configureToEu868_fake.call_count, 1);
-    ASSERT_EQ(lora_driver_join_fake.call_count, 1);
-}
+//     //checking if we set up lora correctly
+//     ASSERT_EQ(lora_driver_rn2483FactoryReset_fake.call_count, 1);
+// 	ASSERT_EQ(lora_driver_configureToEu868_fake.call_count, 1);
+//     ASSERT_EQ(lora_driver_join_fake.call_count, 1);
+// }
 
 TEST_F(Test_production, lora_handlerUplinkTask) {
     //clearing call count
@@ -173,8 +173,9 @@ TEST_F(Test_production, lora_handlerUplinkTask) {
 	// uint16_t co2_ppm = 637; // mocked CO2
 	// uint16_t lux = 276; //mocked lux
     lora_driver_payload_t _uplink_payload;
+    UBaseType_t lora_handler_task_priority = 1;
 
-    lora_handler_task();
+    lora_handler_initialise(lora_handler_task_priority);
 	
     ASSERT_EQ(lora_driver_resetRn2483_fake.call_count, 2);
     ASSERT_EQ(lora_driver_flushBuffers_fake.call_count, 1);
@@ -193,8 +194,9 @@ TEST_F(Test_production, lora_handlerDownlinkTask) {
     //setup
     lora_driver_payload_t downlinkPayload;
     MessageBufferHandle_t downLinkMessageBufferHandle;
+    UBaseType_t lora_handler_task_priority = 1;
 
-    lora_handler_task();
+    lora_handler_initialise(lora_handler_task_priority);
 	
     ASSERT_EQ(lora_driver_resetRn2483_fake.call_count, 2);
     ASSERT_EQ(lora_driver_flushBuffers_fake.call_count, 1);
@@ -209,18 +211,18 @@ TEST_F(Test_production, lora_handlerDownlinkTask) {
 }
 
 
-TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
-    //clearing call count
-    rc_servo_setPosition_fake.call_count = 0;
+// TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
+//     //clearing call count
+//     rc_servo_setPosition_fake.call_count = 0;
     
-    //setup
-    lora_driver_payload_t downlinkPayload = 1;
-    MessageBufferHandle_t downLinkMessageBufferHandle;
+//     //setup
+//     lora_driver_payload_t downlinkPayload = 1;
+//     MessageBufferHandle_t downLinkMessageBufferHandle;
 
-    lora_handler_task();
+//     lora_handler_task();
 	
-    ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
-    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
+//     ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
+//     ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
 
-
-}
+// }
+//

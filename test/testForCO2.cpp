@@ -117,13 +117,13 @@ TEST_F(Test_production, co2_measurement) {
     ASSERT_EQ(mh_z19_getCo2Ppm_fake.call_count, 1);
 }
 
-// TEST_F(Test_production, co2_measurement) {
-// 	//setup
-// 	mh_z19_returnCode_t rc = MHZ19_NO_MEASSURING_AVAILABLE;
-// 	mh_z19_takeMeassuring_fake.return_val = rc;
+TEST_F(Test_production, co2_measurement) {
+	//setup
+	mh_z19_returnCode_t rc = MHZ19_NO_MEASSURING_AVAILABLE;
+	mh_z19_takeMeassuring_fake.return_val = rc;
 	
-// 	co2Task_create();
-//     co2Task_run();
+	co2Task_create();
+    co2Task_run();
 
-//     ASSERT_EQ(mh_z19_getCo2Ppm_fake.call_count, 0);
-// }
+    ASSERT_EQ(mh_z19_getCo2Ppm_fake.call_count, 0);
+}
