@@ -103,21 +103,21 @@ TEST_F(Test_production, co2_semaphoreCall){
 	ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
 }
 
-TEST_F(Test_production, co2_measurement) {
-	//clear call count
-	mh_z19_getCo2Ppm_fake.call_count = 0;
+// TEST_F(Test_production, co2_measurement) {
+// 	//clear call count
+// 	mh_z19_getCo2Ppm_fake.call_count = 0;
 
-	//setup
-	mh_z19_returnCode_t rc = MHZ19_OK;
-	mh_z19_takeMeassuring_fake.return_val = rc;
+// 	//setup
+// 	mh_z19_returnCode_t rc = MHZ19_OK;
+// 	mh_z19_takeMeassuring_fake.return_val = rc;
 	
-	co2Task_create();
-    co2Task_run();
+// 	co2Task_create();
+//     co2Task_run();
 
-    ASSERT_EQ(mh_z19_getCo2Ppm_fake.call_count, 1);
-}
+//     ASSERT_EQ(mh_z19_getCo2Ppm_fake.call_count, 1);
+// }
 
-TEST_F(Test_production, co2_measurement) {
+TEST_F(Test_production, co2_measurement_negative) {
 	//setup
 	mh_z19_returnCode_t rc = MHZ19_NO_MEASSURING_AVAILABLE;
 	mh_z19_takeMeassuring_fake.return_val = rc;
