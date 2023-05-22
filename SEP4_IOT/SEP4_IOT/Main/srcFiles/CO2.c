@@ -23,9 +23,7 @@ void initialize_CO2(QueueHandle_t queue_CO2)
 
 void myCo2CallBack(uint16_t ppm)
 {
-	
     co2 = ppm;
-	
 }
 
 
@@ -49,7 +47,7 @@ void co2Task_run()
         puts("CO2 MEASURING FAILED");  // Something went wrong
     }
 
-	mh_z19_getCo2Ppm;
+
 	printf("CO2: %d \n", co2);
     
 	enqueue_CO2();
