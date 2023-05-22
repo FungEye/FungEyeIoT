@@ -12,7 +12,7 @@ uint16_t co2; // CO2 value
 EventGroupHandle_t _measuredEventGroup;
 
 //Queue
-QueueHandle_t my_queue;
+QueueHandle_t my_co2_queue;
 
 void myCo2CallBack(uint16_t ppm)
 {
@@ -23,7 +23,7 @@ void myCo2CallBack(uint16_t ppm)
 
 void initialize_CO2(QueueHandle_t queue_CO2)
 {
-    my_queue = queue_CO2;
+    my_co2_queue = queue_CO2;
     mh_z19_initialise(ser_USART3);
     mh_z19_injectCallBack(myCo2CallBack);
 }
@@ -93,6 +93,6 @@ void _runCO2(void* params)
 }
 
 void enqueue_CO2(){
-		long ok = xQueueSend(my_queue, (void*) &co2, 0 );
+		long ok = xQueueSend(my_co2_queue, (void*) &co2, 0 );
 		puts(ok ? "Co2 enqued: OK" : "Co2 enqued: FAILED");
 }
