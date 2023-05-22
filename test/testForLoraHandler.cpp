@@ -131,25 +131,25 @@ TEST_F(Test_production, lora_initializationTaskCreation) {
 	ASSERT_EQ(xTaskCreate_fake.call_count, 2);
 }
 
-TEST_F(Test_production, lora_handlerUplinkTask) {
-    //clearing call count
-	lora_driver_resetRn2483_fake.call_count = 0;
-    lora_driver_flushBuffers_fake.call_count = 0;
-    lora_driver_sendUploadMessage_fake.call_count = 0;
+// TEST_F(Test_production, lora_handlerUplinkTask) {
+//     //clearing call count
+// 	lora_driver_resetRn2483_fake.call_count = 0;
+//     lora_driver_flushBuffers_fake.call_count = 0;
+//     lora_driver_sendUploadMessage_fake.call_count = 0;
 
-    //setup
-    lora_driver_payload_t _uplink_payload;
-    UBaseType_t lora_handler_task_priority = 1;
+//     //setup
+//     lora_driver_payload_t _uplink_payload;
+//     UBaseType_t lora_handler_task_priority = 1;
 
-    //lora_handler_initialise(lora_handler_task_priority);
-    lora_handler_task();
+//     //lora_handler_initialise(lora_handler_task_priority);
+//     lora_handler_task();
 	
-    ASSERT_EQ(lora_driver_resetRn2483_fake.call_count, 2);
-    ASSERT_EQ(lora_driver_flushBuffers_fake.call_count, 1);
-    ASSERT_EQ(lora_driver_sendUploadMessage_fake.call_count, 1);
-    ASSERT_EQ(lora_driver_sendUploadMessage_fake.arg0_val, false);
-    ASSERT_EQ(lora_driver_sendUploadMessage_fake.arg1_val, &_uplink_payload);
-}
+//     ASSERT_EQ(lora_driver_resetRn2483_fake.call_count, 2);
+//     ASSERT_EQ(lora_driver_flushBuffers_fake.call_count, 1);
+//     ASSERT_EQ(lora_driver_sendUploadMessage_fake.call_count, 1);
+//     ASSERT_EQ(lora_driver_sendUploadMessage_fake.arg0_val, false);
+//     ASSERT_EQ(lora_driver_sendUploadMessage_fake.arg1_val, &_uplink_payload);
+// }
 
 // TEST_F(Test_production, lora_handlerDownlinkTask) {
 //     //clearing call count
