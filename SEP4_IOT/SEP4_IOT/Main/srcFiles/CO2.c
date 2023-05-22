@@ -6,16 +6,24 @@
 // Most of the imports are done in the Header file.
 #include "../headerFiles/CO2.h"
 
-int16_t co2; // CO2 value
+uint16_t co2; // CO2 value
+
+//Event group
 EventGroupHandle_t _measuredEventGroup;
+
+//Queue
+QueueHandle_t my_queue;
 
 void myCo2CallBack(uint16_t ppm)
 {
+	
     co2 = ppm;
+	
 }
 
-void initialize_CO2()
+void initialize_CO2(QueueHandle_t queue_CO2)
 {
+    my_queue = queue_CO2;
     mh_z19_initialise(ser_USART3);
     mh_z19_injectCallBack(myCo2CallBack);
 }
@@ -24,25 +32,31 @@ void co2Task_run()
 {
     vTaskDelay(pdMS_TO_TICKS(6000));   // 6 seconds delay between measurements
 
-    xEventGroupWaitBits(_measuredEventGroup,
+	xEventGroupWaitBits(_measuredEventGroup,
                             BIT_TASK_CO2_EMPTY,
                             pdFALSE,
                             pdTRUE,
                             portMAX_DELAY);
+   
     mh_z19_returnCode_t rc;
 
     rc = mh_z19_takeMeassuring();  // We try to make a measurement
+	
+	vTaskDelay(pdMS_TO_TICKS(3000));
     if (rc != MHZ19_OK)
     {
         puts("CO2 MEASURING FAILED");  // Something went wrong
     }
 
 	mh_z19_getCo2Ppm;
-
 	printf("CO2: %d \n", co2);
+	enqueue_CO2();
 
     xEventGroupSetBits(_measuredEventGroup, BIT_TASK_CO2_READY);
 	checking_emergency_values();
+	
+	//vTaskDelay(pdMS_TO_TICKS(3000));
+    
     vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
 }
 
@@ -76,4 +90,9 @@ void _runCO2(void* params)
     {
         co2Task_run();
     }
+}
+
+void enqueue_CO2(){
+		long ok = xQueueSend(my_queue, (void*) &co2, 0 );
+		puts(ok ? "Co2 enqued: OK" : "Co2 enqued: FAILED");
 }

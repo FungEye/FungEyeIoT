@@ -10,8 +10,11 @@
 float luxValue;
 uint16_t luxInInt;
 
-//Event groups
+//Event group
 EventGroupHandle_t _measuredEventGroup;
+
+//Queue
+QueueHandle_t my_queue;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
@@ -33,6 +36,8 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
                 printf("\nLux: %u\n", luxInInt);
             }
 
+            enqueue_Light();
+
             xEventGroupSetBits(_measuredEventGroup, BIT_TASK_LIGHT_READY);
             vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
             break;
@@ -50,8 +55,9 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
     }
 }
 
-void initialize_Light()
+void initialize_Light(QueueHandle_t queue_Light)
 {
+    my_queue = queue_Light;
     if (TSL2591_OK == tsl2591_initialise(tsl2591Callback))
     {
         // Driver initialized successfully
@@ -105,4 +111,9 @@ void _runLight(void* params)
     {
         lightTask_run();
     }
+}
+
+void enqueue_Light(){
+		long ok = xQueueSend(my_queue, (void*) &luxInInt, 0 );
+		puts(ok ? "Light enqued: OK" : "Light enqued: FAILED");
 }

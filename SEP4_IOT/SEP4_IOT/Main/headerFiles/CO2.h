@@ -16,6 +16,7 @@
 #include <mh_z19.h>
 #include "Servo.h"
 #include <event_groups.h>
+#include <queue.h>
 
 #include "definitions.h"
 
@@ -56,4 +57,4 @@ void _runCO2(void* params);
  * 
  * Initializes the CO2 sensor by setting up necessary configurations and registering the CO2 callback function.
  */
-void initialize_CO2();
+void initialize_CO2(QueueHandle_t queue_CO2);

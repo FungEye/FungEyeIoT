@@ -15,8 +15,10 @@
 #include <serial.h>
 #include <tsl2591.h>
 #include <event_groups.h>
+#include <queue.h>
 
 #include "definitions.h"
+
 
 /**
  * @brief Runs the light task.
@@ -46,6 +48,6 @@ void _runLight(void* params);
  * 
  * Initializes the light sensor by setting up necessary configurations.
  */
-void initialize_Light();
+void initialize_Light(QueueHandle_t queue_Light);
 
 void tsl2591Callback(tsl2591_returnCode_t rc);

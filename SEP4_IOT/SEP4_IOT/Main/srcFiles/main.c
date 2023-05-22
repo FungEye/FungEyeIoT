@@ -22,11 +22,18 @@
 
 #include <event_groups.h>
 #include "../headerFiles/definitions.h"
+#include <queue.h>
 
 
 //Event groups
 EventGroupHandle_t _measuredEventGroup = NULL;
-EventGroupHandle_t _doneEventGroup = NULL;
+
+//Queues
+QueueHandle_t queue_CO2 = NULL;
+QueueHandle_t queue_Temp = NULL;
+QueueHandle_t queue_Hum = NULL;
+QueueHandle_t queue_Light = NULL;
+
 
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
@@ -38,10 +45,10 @@ void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
  */
 static void _initDrivers(void) {
     puts("Initializing drivers...");
-    initialize_CO2(); // Initializing CO2 driver
-    initialize_HumidityTemperature(); // Initializing HumidityTemperature driver
-    initialize_Light(); // Initializing Light driver
-    lora_initializer(); // Initializing LoRaWAN driver
+    initialize_CO2(queue_CO2); // Initializing CO2 driver
+    initialize_HumidityTemperature(queue_Temp, queue_Hum); // Initializing HumidityTemperature driver
+    initialize_Light(queue_Light); // Initializing Light driver
+    lora_initializer(queue_Temp, queue_Hum, queue_CO2, queue_Light); // Initializing LoRaWAN driver
     initialize_Servo(); // Initializing Servo driver
 }
 
@@ -58,9 +65,14 @@ static void _createTasks() {
 
 static void createEventGroups(){
     _measuredEventGroup = xEventGroupCreate();
-    _doneEventGroup = xEventGroupCreate();
 }
 
+static void createQueues(){
+    queue_CO2 = xQueueCreate(2, sizeof(int));
+    queue_Temp = xQueueCreate(2, sizeof(int));
+    queue_Hum = xQueueCreate(2, sizeof(int));
+    queue_Light = xQueueCreate(2, sizeof(int));
+}
 /**
  * @brief Main function.
  * 
@@ -74,6 +86,7 @@ int main(void) {
     lora_handler_initialise(3); // Initializing LoRaWAN handler with priority 3
 
     createEventGroups();
+    createQueues();
 
     _initDrivers(); // Initializing drivers
     _createTasks(); // Creating tasks
@@ -83,5 +96,8 @@ int main(void) {
     printf("Starting...\n");
     vTaskStartScheduler(); // Starting the FreeRTOS scheduler
 
+	while(1){
+		
+	}
     return 0;
 }

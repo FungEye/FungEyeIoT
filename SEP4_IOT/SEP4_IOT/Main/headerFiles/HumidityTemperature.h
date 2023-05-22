@@ -15,6 +15,7 @@
 #include <serial.h>
 #include <hih8120.h>
 #include <event_groups.h>
+#include <queue.h>
 
 #include "definitions.h"
 
@@ -46,4 +47,4 @@ void _run(void* params);
  * 
  * Initializes the humidity and temperature sensor by setting up necessary configurations.
  */
-void initialize_HumidityTemperature();
+void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum);
