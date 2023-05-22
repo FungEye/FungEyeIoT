@@ -51,3 +51,5 @@ void _runLight(void* params);
 void initialize_Light(QueueHandle_t queue_Light);
 
 void tsl2591Callback(tsl2591_returnCode_t rc);
+
+enqueue_Light();

@@ -6,13 +6,20 @@
 // Most of the imports are done in the Header file.
 #include "../headerFiles/CO2.h"
 
-uint16_t co2; // CO2 value
+uint16_t co2; // CO2 value  
 
 //Event group
 EventGroupHandle_t _measuredEventGroup;
 
 //Queue
 QueueHandle_t my_co2_queue;
+
+void initialize_CO2(QueueHandle_t queue_CO2)
+{
+    my_co2_queue = queue_CO2;
+    mh_z19_initialise(ser_USART3);
+    mh_z19_injectCallBack(myCo2CallBack);
+}
 
 void myCo2CallBack(uint16_t ppm)
 {
@@ -21,12 +28,6 @@ void myCo2CallBack(uint16_t ppm)
 	
 }
 
-void initialize_CO2(QueueHandle_t queue_CO2)
-{
-    my_co2_queue = queue_CO2;
-    mh_z19_initialise(ser_USART3);
-    mh_z19_injectCallBack(myCo2CallBack);
-}
 
 void co2Task_run()
 {
@@ -50,6 +51,7 @@ void co2Task_run()
 
 	mh_z19_getCo2Ppm;
 	printf("CO2: %d \n", co2);
+    
 	enqueue_CO2();
 
     xEventGroupSetBits(_measuredEventGroup, BIT_TASK_CO2_READY);

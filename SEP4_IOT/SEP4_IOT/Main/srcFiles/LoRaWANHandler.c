@@ -157,6 +157,7 @@ void lora_handler_task( void *pvParameters )
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 }
+
 void receive_from_queues(){
 	xQueueReceive( queue_Hum,
                     &( hum ),
