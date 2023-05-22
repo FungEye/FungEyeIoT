@@ -11,10 +11,12 @@
 #include <ATMEGA_FreeRTOS.h>
 
 #include <task.h>
-#include <semphr.h>
 #include <stdbool.h>
 #include <serial.h>
 #include <hih8120.h>
+#include <event_groups.h>
+
+#include "definitions.h"
 
 /**
  * @brief Runs the humidity and temperature task.

@@ -11,10 +11,11 @@
 #include <ATMEGA_FreeRTOS.h>
 
 #include <task.h>
-#include <semphr.h>
 #include <stdbool.h>
 #include <serial.h>
 #include <rc_servo.h>
+#include <event_groups.h>
+
 
 /**
  * @brief Initializes the servo.

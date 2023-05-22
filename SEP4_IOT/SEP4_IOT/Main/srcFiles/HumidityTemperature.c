@@ -8,7 +8,7 @@
 
 int16_t temperature; // Temperature value
 int16_t humidity; // Humidity value
-SemaphoreHandle_t semaphoreTempHum; // Semaphore for Temperature and Humidity
+EventGroupHandle_t _measuredEventGroup;
 
 void initialize_HumidityTemperature() {
     hih8120_initialise();
@@ -17,26 +17,31 @@ void initialize_HumidityTemperature() {
 
 void humidityTemperatureTask_run() {
     vTaskDelay(pdMS_TO_TICKS(6000));   // 6 seconds delay between measurements
-
-    xSemaphoreTake(semaphoreTempHum, portMAX_DELAY);
-
+    
     if (hih8120_wakeup() == HIH8120_OK) {
-        vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(100));
 
-        if (hih8120_measure() == HIH8120_OK) {
-            vTaskDelay(pdMS_TO_TICKS(50));
-            humidity = hih8120_getHumidityPercent_x10(); // Use the 10x form to make sure there is not any weird meassurement converrtions
-            temperature = hih8120_getTemperature_x10();
-			printf("TEMP: %d \n", temperature);
-			printf("HUM: %d \n", humidity);
-        } else {
+    xEventGroupWaitBits(_measuredEventGroup,
+                            BIT_TASK_TEMP_EMPTY,
+                            pdFALSE,
+                            pdTRUE,
+                            portMAX_DELAY);
+
+            if (hih8120_measure() == HIH8120_OK) {
+                vTaskDelay(pdMS_TO_TICKS(50));
+                humidity = hih8120_getHumidityPercent_x10(); // Use the 10x form to make sure there is not any weird meassurement converrtions
+                temperature = hih8120_getTemperature_x10();
+			    printf("TEMP: %d \n", temperature);
+			    printf("HUM: %d \n", humidity);
+
+                xEventGroupSetBits(_measuredEventGroup, BIT_TASK_TEMP_READY);
+				vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
+            } else {
             // printf("FAILED to measure humidity and temperature");
-        }
+            }
     } else {
         // printf("FAILED to wake up humidity and temperature sensor");
     }
-
-    xSemaphoreGive(semaphoreTempHum);
 }
 
 void humidityTemperatureTask_create() {

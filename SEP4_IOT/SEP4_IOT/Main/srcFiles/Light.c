@@ -9,7 +9,9 @@
 
 float luxValue;
 uint16_t luxInInt;
-SemaphoreHandle_t semaphoreLight;
+
+//Event groups
+EventGroupHandle_t _measuredEventGroup;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
@@ -17,11 +19,22 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
     switch (rc)
     {
         case TSL2591_DATA_READY:
+        printf("Entered data_ready case, before if statement");
+
+        xEventGroupWaitBits(_measuredEventGroup,
+                            BIT_TASK_LIGHT_EMPTY,
+                            pdFALSE,
+                            pdTRUE,
+                            portMAX_DELAY);
+
             if (TSL2591_OK == tsl2591_getLux(&luxValue))
             {
                 luxInInt = (uint16_t)luxValue;
                 printf("\nLux: %u\n", luxInInt);
             }
+
+            xEventGroupSetBits(_measuredEventGroup, BIT_TASK_LIGHT_READY);
+            vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
             break;
 
         case TSL2591_OK:
@@ -55,8 +68,6 @@ void lightTask_run()
     }
     vTaskDelay(pdMS_TO_TICKS(6000));
 
-    xSemaphoreTake(semaphoreLight, portMAX_DELAY);
-
     tsl2591_returnCode_t fetchDataStatus = tsl2591_fetchData();
 
     if (fetchDataStatus == TSL2591_OK)
@@ -73,7 +84,6 @@ void lightTask_run()
         printf("Light driver not initialized\n");
     }
 
-    xSemaphoreGive(semaphoreLight);
 }
 
 void lightTask_create()

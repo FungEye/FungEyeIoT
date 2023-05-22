@@ -20,12 +20,13 @@
 #include <lora_driver.h> // Including LoRaWAN driver
 #include <status_leds.h>
 
-#include "semphr.h"
+#include <event_groups.h>
+#include "../headerFiles/definitions.h"
 
-// Semaphores
-SemaphoreHandle_t semaphoreTempHum; // Semaphore for Temperature and Humidity
-SemaphoreHandle_t semaphoreCO2; // Semaphore for CO2
-SemaphoreHandle_t semaphoreLight; // Semaphore for Light
+
+//Event groups
+EventGroupHandle_t _measuredEventGroup = NULL;
+EventGroupHandle_t _doneEventGroup = NULL;
 
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
@@ -55,6 +56,11 @@ static void _createTasks() {
     lightTask_create(); // Creating task for Light
 }
 
+static void createEventGroups(){
+    _measuredEventGroup = xEventGroupCreate();
+    _doneEventGroup = xEventGroupCreate();
+}
+
 /**
  * @brief Main function.
  * 
@@ -67,12 +73,7 @@ int main(void) {
     stdio_initialise(ser_USART0); // Initializing stdio driver
     lora_handler_initialise(3); // Initializing LoRaWAN handler with priority 3
 
-    semaphoreTempHum = xSemaphoreCreateBinary(); // Creating binary semaphore for Temperature and Humidity
-    semaphoreCO2 = xSemaphoreCreateBinary(); // Creating binary semaphore for CO2
-    semaphoreLight = xSemaphoreCreateBinary(); // Creating binary semaphore for Light
-    xSemaphoreGive(semaphoreTempHum); // Giving initial value to semaphore
-    xSemaphoreGive(semaphoreCO2); // Giving initial value to semaphore
-    xSemaphoreGive(semaphoreLight); // Giving initial value to semaphore
+    createEventGroups();
 
     _initDrivers(); // Initializing drivers
     _createTasks(); // Creating tasks

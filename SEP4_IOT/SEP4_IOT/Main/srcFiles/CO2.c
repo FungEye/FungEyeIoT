@@ -7,7 +7,7 @@
 #include "../headerFiles/CO2.h"
 
 int16_t co2; // CO2 value
-SemaphoreHandle_t semaphoreCO2; // Semaphore for CO2
+EventGroupHandle_t _measuredEventGroup;
 
 void myCo2CallBack(uint16_t ppm)
 {
@@ -24,8 +24,11 @@ void co2Task_run()
 {
     vTaskDelay(pdMS_TO_TICKS(6000));   // 6 seconds delay between measurements
 
-    xSemaphoreTake(semaphoreCO2, portMAX_DELAY);
-
+    xEventGroupWaitBits(_measuredEventGroup,
+                            BIT_TASK_CO2_EMPTY,
+                            pdFALSE,
+                            pdTRUE,
+                            portMAX_DELAY);
     mh_z19_returnCode_t rc;
 
     rc = mh_z19_takeMeassuring();  // We try to make a measurement
@@ -33,9 +36,18 @@ void co2Task_run()
     {
         puts("CO2 MEASURING FAILED");  // Something went wrong
     }
+
 	mh_z19_getCo2Ppm;
+
 	printf("CO2: %d \n", co2);
-	if (co2 > 1000)
+
+    xEventGroupSetBits(_measuredEventGroup, BIT_TASK_CO2_READY);
+	checking_emergency_values();
+    vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
+}
+
+void checking_emergency_values(){
+    if (co2 > 1000)
 	{
 		servo_open();
 		vTaskDelay(pdMS_TO_TICKS(2000));
@@ -44,8 +56,6 @@ void co2Task_run()
 	{
 		vTaskDelay(pdMS_TO_TICKS(2000));
 	}
-    
-    xSemaphoreGive(semaphoreCO2); // Give the measured value to the semaphore to access later in LoRaWAN
 }
 
 void co2Task_create()

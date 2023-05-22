@@ -11,11 +11,13 @@
 #include <ATMEGA_FreeRTOS.h>
 
 #include <task.h>
-#include <semphr.h>
 #include <stdbool.h>
 #include <serial.h>
 #include <mh_z19.h>
 #include "Servo.h"
+#include <event_groups.h>
+
+#include "definitions.h"
 
 /**
  * @brief Runs the CO2 task.

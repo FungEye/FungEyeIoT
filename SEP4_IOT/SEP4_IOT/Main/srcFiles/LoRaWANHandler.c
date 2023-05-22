@@ -9,6 +9,9 @@
 void lora_handler_task( void *pvParameters );
 void lora_downlink_task(void *pvParameters);
 
+//Event groups
+EventGroupHandle_t _measuredEventGroup;
+
 static lora_driver_payload_t _uplink_payload;
 extern int16_t temperature;
 extern int16_t humidity;
@@ -126,7 +129,21 @@ void lora_handler_task( void *pvParameters )
 	for(;;)
 	{
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
+		
+		xEventGroupWaitBits(_measuredEventGroup,
+			BIT_TASK_TEMP_READY | BIT_TASK_CO2_READY | BIT_TASK_LIGHT_READY,
+			pdTRUE,
+			pdTRUE,
+			portMAX_DELAY);
+			
+		puts("All bits are set, measurement is ready");
+		
+		setting_payload();
+		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+	}
+}
 
+void setting_payload(){
 		// Some dummy payload
 		uint16_t hum = humidity; // measured humidity
 		int16_t temp = temperature; // measured temp
@@ -146,9 +163,6 @@ void lora_handler_task( void *pvParameters )
 		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
 		_uplink_payload.bytes[6] = lux >> 8;
 		_uplink_payload.bytes[7] = lux & 0xFF;
-
-		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
-	}
 }
 
 /*-----------------------------------------------------------*/
