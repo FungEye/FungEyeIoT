@@ -121,16 +121,7 @@ static void _lora_setup(void)
 /*-----------------------------------------------------------*/
 void lora_handler_task( void *pvParameters )
 {
-	// Hardware reset of LoRaWAN transceiver
-	lora_driver_resetRn2483(1);
-	vTaskDelay(2);
-	lora_driver_resetRn2483(0);
-	// Give it a chance to wakeup
-	vTaskDelay(150);
-
-	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
-
-	_lora_setup();
+	lora_uplink_setup();
 
 	_uplink_payload.len = 8;
 	_uplink_payload.portNo = 2;
@@ -156,6 +147,19 @@ void lora_handler_task( void *pvParameters )
 		reset_queues();
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
+}
+
+void lora_uplink_setup(){
+	// Hardware reset of LoRaWAN transceiver
+	lora_driver_resetRn2483(1);
+	vTaskDelay(2);
+	lora_driver_resetRn2483(0);
+	// Give it a chance to wakeup
+	vTaskDelay(150);
+
+	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
+
+	_lora_setup();
 }
 
 void receive_from_queues(){
@@ -206,6 +210,14 @@ void setting_payload(){
 /*-----------------------------------------------------------*/
 void lora_downlink_task( void *pvParameters )
 {
+	lora_downlink_setup();
+	
+	for(;;){
+		getting_downlink();
+	}
+}
+
+void lora_downlink_setup(){
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
@@ -214,16 +226,11 @@ void lora_downlink_task( void *pvParameters )
 	vTaskDelay(150);
 
 	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
-
-	
-	for(;;){
-		getting_downlink();
-	}
 }
 
 void getting_downlink(){
 		lora_driver_payload_t downlinkPayload;
-		
+
 		// this code must be in the loop of a FreeRTOS task!
 		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
 		

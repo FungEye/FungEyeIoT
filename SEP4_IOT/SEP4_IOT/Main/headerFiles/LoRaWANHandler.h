@@ -76,3 +76,7 @@ void reset_queues();
 void setting_payload();
 
 void getting_downlink();
+
+void lora_uplink_setup();
+
+void lora_downlink_setup();
