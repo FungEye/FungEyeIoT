@@ -170,7 +170,7 @@ void receive_from_queues(){
 	xQueueReceive( queue_CO2,
                     &( co2 ),
                     ( TickType_t ) 20 );
-	printf("CO2 dequeued: %d/n", co2);
+	printf("CO2 dequeued: %d\n", co2);
 	
 	xQueueReceive( queue_Light,
                     &( lux ),

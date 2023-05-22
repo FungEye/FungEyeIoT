@@ -68,10 +68,10 @@ static void createEventGroups(){
 }
 
 static void createQueues(){
-    queue_CO2 = xQueueCreate(2, sizeof(int));
-    queue_Temp = xQueueCreate(2, sizeof(int));
-    queue_Hum = xQueueCreate(2, sizeof(int));
-    queue_Light = xQueueCreate(2, sizeof(int));
+    queue_CO2 = xQueueCreate(1, sizeof(int));
+    queue_Temp = xQueueCreate(1, sizeof(int));
+    queue_Hum = xQueueCreate(1, sizeof(int));
+    queue_Light = xQueueCreate(1, sizeof(int));
 }
 /**
  * @brief Main function.
