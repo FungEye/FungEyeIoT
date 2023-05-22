@@ -45,7 +45,6 @@ static void _lora_setup(void)
 {
 	char _out_buf[20];
 	lora_driver_returnCode_t rc;
-	//status_leds_slowBlink(led_ST2); // OPTIONAL: Led the green led blink slowly while we are setting up LoRa
 
 	// Factory reset the transceiver
 	printf("FactoryReset >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_rn2483FactoryReset()));
@@ -81,9 +80,6 @@ static void _lora_setup(void)
 
 		if ( rc != LORA_ACCEPTED)
 		{
-			// Make the red led pulse to tell something went wrong
-			//status_leds_longPuls(led_ST1); // OPTIONAL
-			// Wait 5 sec and lets try again
 			vTaskDelay(pdMS_TO_TICKS(5000UL));
 		}
 		else
@@ -95,21 +91,13 @@ static void _lora_setup(void)
 	if (rc == LORA_ACCEPTED)
 	{
 		// Connected to LoRaWAN :-)
-		// Make the green led steady
-		//status_leds_ledOn(led_ST2); // OPTIONAL
 	}
 	else
 	{
 		// Something went wrong
-		// Turn off the green led
-		//status_leds_ledOff(led_ST2); // OPTIONAL
-		// Make the red led blink fast to tell something went wrong
-		//status_leds_fastBlink(led_ST1); // OPTIONAL
-
 		// Lets stay here
 		while (1)
 		{
-			//taskYIELD();
 		}
 	}
 }
@@ -159,7 +147,6 @@ void lora_handler_task( void *pvParameters )
 		_uplink_payload.bytes[6] = lux >> 8;
 		_uplink_payload.bytes[7] = lux & 0xFF;
 
-		//status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 }
