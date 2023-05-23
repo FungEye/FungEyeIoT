@@ -54,7 +54,10 @@ TEST_F(Test_production, humAndTemp_initialization) {
 	QueueHandle_t my_queue_temp = xQueueCreate(1, sizeof(int));
 	QueueHandle_t my_queue_hum = xQueueCreate(1, sizeof(int));
 
-	initialize_HumidityTemperature(my_queue_temp, my_queue_hum);
+	EventGroupHandle_t groupTemp;
+	groupTemp= xEventGroupCreate();
+
+	initialize_HumidityTemperature(my_queue_temp, my_queue_hum, groupTemp);
 	ASSERT_EQ(hih8120_initialise_fake.call_count, 1);
 }
 

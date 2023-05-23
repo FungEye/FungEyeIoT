@@ -112,7 +112,10 @@ TEST_F(Test_production, lora_initialization) {
     QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
     QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
 
-    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1);
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
 
     //checking if we create a buffer handling downlink
     ASSERT_EQ(xMessageBufferCreate_fake.call_count, 1);

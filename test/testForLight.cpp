@@ -70,7 +70,11 @@ protected:
 
 TEST_F(Test_production, light_sensorInit) {
 	QueueHandle_t my_queueLight =  xQueueCreate(1, sizeof(int));
-	initialize_Light(my_queueLight);
+	
+	EventGroupHandle_t groupLight;
+	groupLight = xEventGroupCreate();
+
+	initialize_Light(my_queueLight, groupLight);
 	ASSERT_EQ(tsl2591_initialise_fake.call_count, 1);
 }
 

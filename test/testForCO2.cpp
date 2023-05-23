@@ -61,8 +61,11 @@ protected:
 TEST_F(Test_production, co2_initialization) {
 	QueueHandle_t queueCO2;
 	queueCO2 = xQueueCreate(1, sizeof(int));
+
+	EventGroupHandle_t groupCO2;
+	groupCO2 = xEventGroupCreate();
 	
-	initialize_CO2(queueCO2);
+	initialize_CO2(queueCO2, groupCO2);
     
 	ASSERT_EQ(mh_z19_initialise_fake.call_count, 1);
 }
