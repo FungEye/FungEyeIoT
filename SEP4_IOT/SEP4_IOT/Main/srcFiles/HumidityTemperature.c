@@ -8,11 +8,12 @@
 
 int16_t temperature; // Temperature value
 int16_t humidity; // Humidity value
-extern EventGroupHandle_t _measuredEventGroup;
+EventGroupHandle_t _measuredEventGroupTemp;
 QueueHandle_t my_queue_temp;
 QueueHandle_t my_queue_hum;
 
-void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum) {
+void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum, EventGroupHandle_t _measuredEventGroup) {
+	_measuredEventGroupTemp = _measuredEventGroup;
     my_queue_temp = queue_Temp;
     my_queue_hum = queue_Hum;
     hih8120_initialise();
@@ -25,7 +26,7 @@ void humidityTemperatureTask_run() {
     if (hih8120_wakeup() == HIH8120_OK) {
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    xEventGroupWaitBits(_measuredEventGroup,
+    xEventGroupWaitBits(_measuredEventGroupTemp,
                             BIT_TASK_TEMP_EMPTY | BIT_TASK_HUM_EMPTY,
                             pdFALSE,
                             pdTRUE,
@@ -43,8 +44,8 @@ void humidityTemperatureTask_run() {
                 enqueue_Temp();
                 enqueue_Hum();
 
-                xEventGroupSetBits(_measuredEventGroup, BIT_TASK_TEMP_READY);
-				xEventGroupSetBits(_measuredEventGroup, BIT_TASK_HUM_READY);
+                xEventGroupSetBits(_measuredEventGroupTemp, BIT_TASK_TEMP_READY);
+				xEventGroupSetBits(_measuredEventGroupTemp, BIT_TASK_HUM_READY);
 
 				vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
             } else {

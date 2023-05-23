@@ -45,10 +45,10 @@ void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
  */
 static void _initDrivers(void) {
     puts("Initializing drivers...");
-    initialize_CO2(queue_CO2); // Initializing CO2 driver
-    initialize_HumidityTemperature(queue_Temp, queue_Hum); // Initializing HumidityTemperature driver
-    initialize_Light(queue_Light); // Initializing Light driver
-    lora_initializer(queue_Temp, queue_Hum, queue_CO2, queue_Light); // Initializing LoRaWAN driver
+    initialize_CO2(queue_CO2, _measuredEventGroup); // Initializing CO2 driver
+    initialize_HumidityTemperature(queue_Temp, queue_Hum, _measuredEventGroup); // Initializing HumidityTemperature driver
+    initialize_Light(queue_Light, _measuredEventGroup); // Initializing Light driver
+    lora_initializer(queue_Temp, queue_Hum, queue_CO2, queue_Light, _measuredEventGroup); // Initializing LoRaWAN driver
     initialize_Servo(); // Initializing Servo driver
 }
 
@@ -82,6 +82,7 @@ static void createQueues(){
  * @return Returns 0 on successful execution.
  */
 int main(void) {
+	printf("starting!");
     stdio_initialise(ser_USART0); // Initializing stdio driver
     lora_handler_initialise(3); // Initializing LoRaWAN handler with priority 3
 

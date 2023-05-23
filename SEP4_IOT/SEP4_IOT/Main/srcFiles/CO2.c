@@ -9,13 +9,14 @@
 uint16_t co2; // CO2 value  
 
 //Event group
-extern EventGroupHandle_t _measuredEventGroup;
+ EventGroupHandle_t _measuredEventGroupCO2;
 
 //Queue
 QueueHandle_t my_co2_queue;
 
-void initialize_CO2(QueueHandle_t queue_CO2)
+void initialize_CO2(QueueHandle_t queue_CO2, EventGroupHandle_t _measuredEventGroup)
 {
+	_measuredEventGroupCO2 = _measuredEventGroup;
     my_co2_queue = queue_CO2;
     mh_z19_initialise(ser_USART3);
     mh_z19_injectCallBack(myCo2CallBack);
@@ -31,7 +32,7 @@ void co2Task_run()
 {
     vTaskDelay(pdMS_TO_TICKS(6000));   // 6 seconds delay between measurements
 
-	xEventGroupWaitBits(_measuredEventGroup,
+	xEventGroupWaitBits(_measuredEventGroupCO2,
                             BIT_TASK_CO2_EMPTY,
                             pdFALSE,
                             pdTRUE,
@@ -52,7 +53,7 @@ void co2Task_run()
     
 	enqueue_CO2();
 
-    xEventGroupSetBits(_measuredEventGroup, BIT_TASK_CO2_READY);
+    xEventGroupSetBits(_measuredEventGroupCO2, BIT_TASK_CO2_READY);
 	checking_emergency_values();
 	
 	//vTaskDelay(pdMS_TO_TICKS(3000));

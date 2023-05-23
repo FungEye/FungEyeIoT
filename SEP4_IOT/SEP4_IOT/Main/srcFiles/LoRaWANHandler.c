@@ -10,7 +10,7 @@ void lora_handler_task( void *pvParameters );
 void lora_downlink_task(void *pvParameters);
 
 //Event groups
-extern EventGroupHandle_t _measuredEventGroup;
+EventGroupHandle_t _measuredEventGroupLora;
 
 static lora_driver_payload_t _uplink_payload;
 
@@ -28,7 +28,8 @@ static int16_t lux;	// measured lux
 
 MessageBufferHandle_t downLinkMessageBufferHandle; // Here I make room for two downlink messages in the message buffer
 
-void lora_initializer(QueueHandle_t queue_Temp1, QueueHandle_t queue_Hum1, QueueHandle_t queueCo2, QueueHandle_t queue_Light1){
+void lora_initializer(QueueHandle_t queue_Temp1, QueueHandle_t queue_Hum1, QueueHandle_t queueCo2, QueueHandle_t queue_Light1, EventGroupHandle_t measuredEventGroup){
+	_measuredEventGroupLora = measuredEventGroup;
 	queue_Temp = queue_Temp1;
 	queue_Hum = queue_Hum1;
 	queue_CO2 = queueCo2;
@@ -135,7 +136,7 @@ void lora_handler_task( void *pvParameters )
 		//xTaskDelayUntil( &xLastWakeTime, xFrequency );
 		
 		puts("-----Waiting for bits.-----");
-		xEventGroupWaitBits(_measuredEventGroup,
+		xEventGroupWaitBits(_measuredEventGroupLora,
 			BIT_TASK_TEMP_READY | BIT_TASK_HUM_READY | BIT_TASK_CO2_READY | BIT_TASK_LIGHT_READY,
 			pdTRUE,
 			pdTRUE,

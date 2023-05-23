@@ -57,7 +57,7 @@ void _runCO2(void* params);
  * 
  * Initializes the CO2 sensor by setting up necessary configurations and registering the CO2 callback function.
  */
-void initialize_CO2(QueueHandle_t queue_CO2);
+void initialize_CO2(QueueHandle_t queue_CO2, EventGroupHandle_t _measuredEventGroup);
 
 void checking_emergency_values();
 

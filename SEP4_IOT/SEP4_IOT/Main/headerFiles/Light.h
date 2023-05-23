@@ -48,7 +48,7 @@ void _runLight(void* params);
  * 
  * Initializes the light sensor by setting up necessary configurations.
  */
-void initialize_Light(QueueHandle_t queue_Light);
+void initialize_Light(QueueHandle_t queue_Light, EventGroupHandle_t _measuredEventGroup);
 
 void tsl2591Callback(tsl2591_returnCode_t rc);
 

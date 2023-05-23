@@ -67,7 +67,7 @@ void lora_downlink_task(void *pvParameters);
  * 
  * Initializes the LoRaWAN driver by setting up necessary configurations.
  */
-void lora_initializer(QueueHandle_t queue_Temp1, QueueHandle_t queue_Hum1, QueueHandle_t queueCo2, QueueHandle_t queue_Light1);
+void lora_initializer(QueueHandle_t queue_Temp1, QueueHandle_t queue_Hum1, QueueHandle_t queueCo2, QueueHandle_t queue_Light1, EventGroupHandle_t _measuredEventGroup);
 
 void receive_from_queues();
 

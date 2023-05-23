@@ -11,7 +11,7 @@ float luxValue;
 uint16_t luxInInt;
 
 //Event group
-extern EventGroupHandle_t _measuredEventGroup;
+EventGroupHandle_t _measuredEventGroupLight;
 
 //Queue
 QueueHandle_t my_queue;
@@ -24,7 +24,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
         case TSL2591_DATA_READY:
         printf("Entered data_ready case, before if statement");
 
-        xEventGroupWaitBits(_measuredEventGroup,
+        xEventGroupWaitBits(_measuredEventGroupLight,
                             BIT_TASK_LIGHT_EMPTY,
                             pdFALSE,
                             pdTRUE,
@@ -38,7 +38,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
 
             enqueue_Light();
 
-            xEventGroupSetBits(_measuredEventGroup, BIT_TASK_LIGHT_READY);
+            xEventGroupSetBits(_measuredEventGroupLight, BIT_TASK_LIGHT_READY);
             vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
             break;
 
@@ -55,8 +55,9 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
     }
 }
 
-void initialize_Light(QueueHandle_t queue_Light)
+void initialize_Light(QueueHandle_t queue_Light, EventGroupHandle_t _measuredEventGroup)
 {
+	_measuredEventGroupLight = _measuredEventGroup;
     my_queue = queue_Light;
     if (TSL2591_OK == tsl2591_initialise(tsl2591Callback))
     {

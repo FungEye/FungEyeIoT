@@ -47,7 +47,7 @@ void _run(void* params);
  * 
  * Initializes the humidity and temperature sensor by setting up necessary configurations.
  */
-void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum);
+void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum,EventGroupHandle_t _measuredEventGroup);
 
 void enqueue_Temp();
 
