@@ -198,6 +198,9 @@
     <Compile Include="Main\HeaderFiles\CO2.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Main\HeaderFiles\definitions.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Main\HeaderFiles\HumidityTemperature.h">
       <SubType>compile</SubType>
     </Compile>

@@ -8,35 +8,52 @@
 
 int16_t temperature; // Temperature value
 int16_t humidity; // Humidity value
-SemaphoreHandle_t semaphoreTempHum; // Semaphore for Temperature and Humidity
+EventGroupHandle_t _measuredEventGroupTemp;
+QueueHandle_t my_queue_temp;
+QueueHandle_t my_queue_hum;
 
-void initialize_HumidityTemperature() {
+void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum, EventGroupHandle_t _measuredEventGroup) {
+	_measuredEventGroupTemp = _measuredEventGroup;
+    my_queue_temp = queue_Temp;
+    my_queue_hum = queue_Hum;
     hih8120_initialise();
 }
 
 
 void humidityTemperatureTask_run() {
     vTaskDelay(pdMS_TO_TICKS(6000));   // 6 seconds delay between measurements
-
-    xSemaphoreTake(semaphoreTempHum, portMAX_DELAY);
-
+    
     if (hih8120_wakeup() == HIH8120_OK) {
-        vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(100));
 
-        if (hih8120_measure() == HIH8120_OK) {
-            vTaskDelay(pdMS_TO_TICKS(50));
-            humidity = hih8120_getHumidityPercent_x10(); // Use the 10x form to make sure there is not any weird meassurement converrtions
-            temperature = hih8120_getTemperature_x10();
-			printf("TEMP: %d \n", temperature);
-			printf("HUM: %d \n", humidity);
-        } else {
+    xEventGroupWaitBits(_measuredEventGroupTemp,
+                            BIT_TASK_TEMP_EMPTY | BIT_TASK_HUM_EMPTY,
+                            pdFALSE,
+                            pdTRUE,
+                            portMAX_DELAY);
+
+            if (hih8120_measure() == HIH8120_OK) {
+                vTaskDelay(pdMS_TO_TICKS(1000));
+                humidity = hih8120_getHumidityPercent_x10(); // Using the 10x form to make sure there is not any weird meassurement converrtions
+				
+				vTaskDelay(pdMS_TO_TICKS(1000));
+                temperature = hih8120_getTemperature_x10();
+			    printf("TEMP: %d \n", temperature);
+			    printf("HUM: %d \n", humidity);
+
+                enqueue_Temp();
+                enqueue_Hum();
+
+                xEventGroupSetBits(_measuredEventGroupTemp, BIT_TASK_TEMP_READY);
+				xEventGroupSetBits(_measuredEventGroupTemp, BIT_TASK_HUM_READY);
+
+				vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
+            } else {
             // printf("FAILED to measure humidity and temperature");
-        }
+            }
     } else {
         // printf("FAILED to wake up humidity and temperature sensor");
     }
-
-    xSemaphoreGive(semaphoreTempHum);
 }
 
 void humidityTemperatureTask_create() {
@@ -54,4 +71,14 @@ void _run(void* params) {
     while (1) {
         humidityTemperatureTask_run();
     }
+}
+
+void enqueue_Temp(){
+		long ok = xQueueSend(my_queue_temp, (void*) &temperature, 0 );
+		puts(ok ? "Temperature enqued: OK" : "Temperature enqued: FAILED");
+}
+
+void enqueue_Hum(){
+		long ok = xQueueSend(my_queue_hum, (void*) &humidity, 0 );
+		puts(ok ? "Humidity enqued: OK" : "Humidity enqued: FAILED");
 }

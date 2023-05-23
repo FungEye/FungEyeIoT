@@ -20,12 +20,20 @@
 #include <lora_driver.h> // Including LoRaWAN driver
 #include <status_leds.h>
 
-#include "semphr.h"
+#include <event_groups.h>
+#include "../headerFiles/definitions.h"
+#include <queue.h>
 
-// Semaphores
-SemaphoreHandle_t semaphoreTempHum; // Semaphore for Temperature and Humidity
-SemaphoreHandle_t semaphoreCO2; // Semaphore for CO2
-SemaphoreHandle_t semaphoreLight; // Semaphore for Light
+
+//Event groups
+EventGroupHandle_t _measuredEventGroup = NULL;
+
+//Queues
+QueueHandle_t queue_CO2 = NULL;
+QueueHandle_t queue_Temp = NULL;
+QueueHandle_t queue_Hum = NULL;
+QueueHandle_t queue_Light = NULL;
+
 
 // Prototype for LoRaWAN handler
 void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
@@ -37,10 +45,10 @@ void lora_handler_initialise(UBaseType_t lora_handler_task_priority);
  */
 static void _initDrivers(void) {
     puts("Initializing drivers...");
-    initialize_CO2(); // Initializing CO2 driver
-    initialize_HumidityTemperature(); // Initializing HumidityTemperature driver
-    initialize_Light(); // Initializing Light driver
-    lora_initializer(); // Initializing LoRaWAN driver
+    initialize_CO2(queue_CO2, _measuredEventGroup); // Initializing CO2 driver
+    initialize_HumidityTemperature(queue_Temp, queue_Hum, _measuredEventGroup); // Initializing HumidityTemperature driver
+    initialize_Light(queue_Light, _measuredEventGroup); // Initializing Light driver
+    lora_initializer(queue_Temp, queue_Hum, queue_CO2, queue_Light, _measuredEventGroup); // Initializing LoRaWAN driver
     initialize_Servo(); // Initializing Servo driver
 }
 
@@ -55,6 +63,16 @@ static void _createTasks() {
     lightTask_create(); // Creating task for Light
 }
 
+static void createEventGroups(){
+    _measuredEventGroup = xEventGroupCreate();
+}
+
+static void createQueues(){
+    queue_CO2 = xQueueCreate(1, sizeof(int));
+    queue_Temp = xQueueCreate(1, sizeof(int));
+    queue_Hum = xQueueCreate(1, sizeof(int));
+    queue_Light = xQueueCreate(1, sizeof(int));
+}
 /**
  * @brief Main function.
  * 
@@ -64,15 +82,12 @@ static void _createTasks() {
  * @return Returns 0 on successful execution.
  */
 int main(void) {
+	printf("starting!");
     stdio_initialise(ser_USART0); // Initializing stdio driver
     lora_handler_initialise(3); // Initializing LoRaWAN handler with priority 3
 
-    semaphoreTempHum = xSemaphoreCreateBinary(); // Creating binary semaphore for Temperature and Humidity
-    semaphoreCO2 = xSemaphoreCreateBinary(); // Creating binary semaphore for CO2
-    semaphoreLight = xSemaphoreCreateBinary(); // Creating binary semaphore for Light
-    xSemaphoreGive(semaphoreTempHum); // Giving initial value to semaphore
-    xSemaphoreGive(semaphoreCO2); // Giving initial value to semaphore
-    xSemaphoreGive(semaphoreLight); // Giving initial value to semaphore
+    createEventGroups();
+    createQueues();
 
     _initDrivers(); // Initializing drivers
     _createTasks(); // Creating tasks
@@ -82,5 +97,8 @@ int main(void) {
     printf("Starting...\n");
     vTaskStartScheduler(); // Starting the FreeRTOS scheduler
 
+	while(1){
+		
+	}
     return 0;
 }

@@ -9,15 +9,32 @@
 void lora_handler_task( void *pvParameters );
 void lora_downlink_task(void *pvParameters);
 
+//Event groups
+EventGroupHandle_t _measuredEventGroupLora;
+
 static lora_driver_payload_t _uplink_payload;
-extern int16_t temperature;
-extern int16_t humidity;
-extern int16_t co2;
-extern int16_t luxInInt;
+
+//Queues
+QueueHandle_t queue_Temp;
+QueueHandle_t queue_Hum;
+QueueHandle_t queue_CO2; 
+QueueHandle_t queue_Light;
+
+//local variables
+static int16_t hum;	// measured hum
+static int16_t temp; // measured temp
+static int16_t co2; // measured CO2
+static int16_t lux;	// measured lux
 
 MessageBufferHandle_t downLinkMessageBufferHandle; // Here I make room for two downlink messages in the message buffer
 
-void lora_initializer(){
+void lora_initializer(QueueHandle_t queue_Temp1, QueueHandle_t queue_Hum1, QueueHandle_t queueCo2, QueueHandle_t queue_Light1, EventGroupHandle_t measuredEventGroup){
+	_measuredEventGroupLora = measuredEventGroup;
+	queue_Temp = queue_Temp1;
+	queue_Hum = queue_Hum1;
+	queue_CO2 = queueCo2;
+	queue_Light = queue_Light1;
+
 	downLinkMessageBufferHandle  = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	lora_driver_initialise(ser_USART1, downLinkMessageBufferHandle); // The parameter is the USART port the RN2483 module is connected to - in this case USART1 - here no message buffer for down-link messages are defined
 }
@@ -45,7 +62,6 @@ static void _lora_setup(void)
 {
 	char _out_buf[20];
 	lora_driver_returnCode_t rc;
-	//status_leds_slowBlink(led_ST2); // OPTIONAL: Led the green led blink slowly while we are setting up LoRa
 
 	// Factory reset the transceiver
 	printf("FactoryReset >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_rn2483FactoryReset()));
@@ -81,9 +97,6 @@ static void _lora_setup(void)
 
 		if ( rc != LORA_ACCEPTED)
 		{
-			// Make the red led pulse to tell something went wrong
-			//status_leds_longPuls(led_ST1); // OPTIONAL
-			// Wait 5 sec and lets try again
 			vTaskDelay(pdMS_TO_TICKS(5000UL));
 		}
 		else
@@ -95,21 +108,13 @@ static void _lora_setup(void)
 	if (rc == LORA_ACCEPTED)
 	{
 		// Connected to LoRaWAN :-)
-		// Make the green led steady
-		//status_leds_ledOn(led_ST2); // OPTIONAL
 	}
 	else
 	{
 		// Something went wrong
-		// Turn off the green led
-		//status_leds_ledOff(led_ST2); // OPTIONAL
-		// Make the red led blink fast to tell something went wrong
-		//status_leds_fastBlink(led_ST1); // OPTIONAL
-
 		// Lets stay here
 		while (1)
 		{
-			//taskYIELD();
 		}
 	}
 }
@@ -117,6 +122,35 @@ static void _lora_setup(void)
 /*-----------------------------------------------------------*/
 void lora_handler_task( void *pvParameters )
 {
+	lora_uplink_setup();
+
+	_uplink_payload.len = 8;
+	_uplink_payload.portNo = 2;
+
+	//TickType_t xLastWakeTime;
+	//const TickType_t xFrequency = pdMS_TO_TICKS(100000UL); // Upload message every 5 minutes (300000 ms)
+	//xLastWakeTime = xTaskGetTickCount();
+	
+	for(;;)
+	{
+		//xTaskDelayUntil( &xLastWakeTime, xFrequency );
+		
+		puts("-----Waiting for bits.-----");
+		xEventGroupWaitBits(_measuredEventGroupLora,
+			BIT_TASK_TEMP_READY | BIT_TASK_HUM_READY | BIT_TASK_CO2_READY | BIT_TASK_LIGHT_READY,
+			pdTRUE,
+			pdTRUE,
+			portMAX_DELAY);
+			
+		puts("-----All bits are set.-----");
+		
+		setting_payload();
+		reset_queues();
+		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+	}
+}
+
+void lora_uplink_setup(){
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
@@ -127,46 +161,64 @@ void lora_handler_task( void *pvParameters )
 	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 
 	_lora_setup();
+}
 
-	_uplink_payload.len = 8;
-	_uplink_payload.portNo = 2;
+void receive_from_queues(){
+	xQueueReceive( queue_Hum,
+                    &( hum ),
+                    ( TickType_t ) 20 );
 
-	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = pdMS_TO_TICKS(100000UL); // Upload message every 5 minutes (300000 ms)
-	xLastWakeTime = xTaskGetTickCount();
+	xQueueReceive( queue_Temp,
+                    &( temp ),
+                    ( TickType_t ) 20 );
+
+	vTaskDelay(pdMS_TO_TICKS(3000));
+	xQueueReceive( queue_CO2,
+                    &( co2 ),
+                    ( TickType_t ) 20 );
+	printf("CO2 dequeued: %d\n", co2);
 	
-	for(;;)
-	{
-		xTaskDelayUntil( &xLastWakeTime, xFrequency );
+	xQueueReceive( queue_Light,
+                    &( lux ),
+                    ( TickType_t ) 20 );
+}
 
-		// Some dummy payload
-		uint16_t hum = humidity; // measured humidity
-		int16_t temp = temperature; // measured temp
-		uint16_t co2_ppm = co2; // measured CO2
-		uint16_t lux = luxInInt;
+void reset_queues(){
+	xQueueReset(queue_Hum);
+	xQueueReset(queue_Temp);
+	xQueueReset(queue_Light);
+	xQueueReset(queue_CO2);
+}
+
+void setting_payload(){
+		receive_from_queues();
 		
-		printf("TEMP BEFORE SEND: %d\n",temperature);
-		printf("HUMID BEFORE SEND: %d\n",humidity);
-		printf("CO2 BEFORE SEND: %d\n",co2_ppm);
+		printf("TEMP BEFORE SEND: %d\n",temp);
+		printf("HUMID BEFORE SEND: %d\n",hum);
+		printf("CO2 BEFORE SEND: %d\n",co2);
 		printf("LUX BEFORE SEND: %d\n",lux);
 
 		_uplink_payload.bytes[0] = hum >> 8;
 		_uplink_payload.bytes[1] = hum & 0xFF;
 		_uplink_payload.bytes[2] = temp >> 8;
 		_uplink_payload.bytes[3] = temp & 0xFF;
-		_uplink_payload.bytes[4] = co2_ppm >> 8;
-		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
+		_uplink_payload.bytes[4] = co2 >> 8;
+		_uplink_payload.bytes[5] = co2 & 0xFF;
 		_uplink_payload.bytes[6] = lux >> 8;
 		_uplink_payload.bytes[7] = lux & 0xFF;
-
-		//status_leds_shortPuls(led_ST4);  // OPTIONAL
-		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
-	}
 }
 
 /*-----------------------------------------------------------*/
 void lora_downlink_task( void *pvParameters )
 {
+	lora_downlink_setup();
+	
+	for(;;){
+		getting_downlink();
+	}
+}
+
+void lora_downlink_setup(){
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
@@ -175,11 +227,11 @@ void lora_downlink_task( void *pvParameters )
 	vTaskDelay(150);
 
 	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
+}
 
-	
-	for(;;){
+void getting_downlink(){
 		lora_driver_payload_t downlinkPayload;
-		
+
 		// this code must be in the loop of a FreeRTOS task!
 		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
 		
@@ -198,5 +250,6 @@ void lora_downlink_task( void *pvParameters )
 		else{
 			printf("SERVO UNKNOWN VALUE\n");
 		}
-	}
 }
+
+

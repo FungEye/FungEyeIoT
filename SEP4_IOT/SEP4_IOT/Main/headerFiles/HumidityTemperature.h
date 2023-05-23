@@ -11,10 +11,13 @@
 #include <ATMEGA_FreeRTOS.h>
 
 #include <task.h>
-#include <semphr.h>
 #include <stdbool.h>
 #include <serial.h>
 #include <hih8120.h>
+#include <event_groups.h>
+#include <queue.h>
+
+#include "definitions.h"
 
 /**
  * @brief Runs the humidity and temperature task.
@@ -44,4 +47,8 @@ void _run(void* params);
  * 
  * Initializes the humidity and temperature sensor by setting up necessary configurations.
  */
-void initialize_HumidityTemperature();
+void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum,EventGroupHandle_t _measuredEventGroup);
+
+void enqueue_Temp();
+
+void enqueue_Hum();

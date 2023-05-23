@@ -11,11 +11,14 @@
 #include <ATMEGA_FreeRTOS.h>
 
 #include <task.h>
-#include <semphr.h>
 #include <stdbool.h>
 #include <serial.h>
 #include <mh_z19.h>
 #include "Servo.h"
+#include <event_groups.h>
+#include <queue.h>
+
+#include "definitions.h"
 
 /**
  * @brief Runs the CO2 task.
@@ -54,4 +57,8 @@ void _runCO2(void* params);
  * 
  * Initializes the CO2 sensor by setting up necessary configurations and registering the CO2 callback function.
  */
-void initialize_CO2();
+void initialize_CO2(QueueHandle_t queue_CO2, EventGroupHandle_t _measuredEventGroup);
+
+void checking_emergency_values();
+
+void enqueue_CO2();

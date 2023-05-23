@@ -17,9 +17,15 @@
 #include <status_leds.h>
 #include "Servo.h"
 
+#include <event_groups.h>
+#include <queue.h>
+
+#include "definitions.h"
+
 // Parameters for OTAA join - You have got these in a mail from IHA
 #define LORA_appEUI "F2DDE2E826DE9BA5"
 #define LORA_appKEY "FA15F6404AD2D77F878514403C7422DD"
+
 
 /**
  * @brief LoRaWAN handler task.
@@ -61,4 +67,16 @@ void lora_downlink_task(void *pvParameters);
  * 
  * Initializes the LoRaWAN driver by setting up necessary configurations.
  */
-void lora_initializer();
+void lora_initializer(QueueHandle_t queue_Temp1, QueueHandle_t queue_Hum1, QueueHandle_t queueCo2, QueueHandle_t queue_Light1, EventGroupHandle_t _measuredEventGroup);
+
+void receive_from_queues();
+
+void reset_queues();
+
+void setting_payload();
+
+void getting_downlink();
+
+void lora_uplink_setup();
+
+void lora_downlink_setup();

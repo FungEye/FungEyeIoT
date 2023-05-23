@@ -41,11 +41,17 @@ protected:
 		RESET_FAKE(mh_z19_calibrateZeroPoint);
 		RESET_FAKE(mh_z19_calibrateSpanPoint);
 
+		//servo
 		RESET_FAKE(rc_servo_initialise);
 		RESET_FAKE(rc_servo_setPosition);
 
+		//FreeRTOS
 		RESET_FAKE(xTaskGetTickCount);
 		RESET_FAKE(xTaskDelayUntil);
+
+		//from queues
+		RESET_FAKE(xQueueCreate);
+
 		FFF_RESET_HISTORY();
 	}
 	void TearDown() override
@@ -53,8 +59,13 @@ protected:
 };
 
 TEST_F(Test_production, co2_initialization) {
+	QueueHandle_t queueCO2;
+	queueCO2 = xQueueCreate(1, sizeof(int));
 
-	initialize_CO2();
+	EventGroupHandle_t groupCO2;
+	groupCO2 = xEventGroupCreate();
+	
+	initialize_CO2(queueCO2, groupCO2);
     
 	ASSERT_EQ(mh_z19_initialise_fake.call_count, 1);
 }
@@ -83,39 +94,6 @@ TEST_F(Test_production, co2_taskCreateArgsCheck)
 	ASSERT_EQ(xTaskCreate_fake.arg5_val, nullptr);
 
 }
-
-TEST_F(Test_production, co2_semaphoreCall){
-	//Set up
-	SemaphoreHandle_t semaphoreLight;
-	semaphoreLight = xSemaphoreCreateBinary();
-    xSemaphoreGive(semaphoreLight);
-
-	//clearing the call count before calling the function
-	xSemaphoreTake_fake.call_count = 0;
-	xSemaphoreGive_fake.call_count = 0;
-
-	co2Task_create();
-	co2Task_run();
-
-	ASSERT_EQ(xSemaphoreTake_fake.call_count, 1);
-	ASSERT_EQ(xSemaphoreTake_fake.arg0_val, semaphoreLight);
-	ASSERT_EQ(xSemaphoreTake_fake.arg1_val, portMAX_DELAY);
-	ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
-}
-
-// TEST_F(Test_production, co2_measurement) {
-// 	//clear call count
-// 	mh_z19_getCo2Ppm_fake.call_count = 0;
-
-// 	//setup
-// 	mh_z19_returnCode_t rc = MHZ19_OK;
-// 	mh_z19_takeMeassuring_fake.return_val = rc;
-	
-// 	co2Task_create();
-//     co2Task_run();
-
-//     ASSERT_EQ(mh_z19_getCo2Ppm_fake.call_count, 1);
-// }
 
 TEST_F(Test_production, co2_measurement_negative) {
 	//setup
