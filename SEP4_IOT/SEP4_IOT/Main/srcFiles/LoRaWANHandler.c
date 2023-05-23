@@ -128,7 +128,6 @@ void lora_handler_task( void *pvParameters )
 	_uplink_payload.portNo = 2;
 
 	//TickType_t xLastWakeTime;
-	//const TickType_t xFrequency = pdMS_TO_TICKS(100000UL); // Upload message every 5 minutes (300000 ms)
 	//xLastWakeTime = xTaskGetTickCount();
 	
 	for(;;)
@@ -142,11 +141,15 @@ void lora_handler_task( void *pvParameters )
 			pdTRUE,
 			portMAX_DELAY);
 			
+			 vTaskDelay(pdMS_TO_TICKS(300000)); // Upload message every 5 minutes (300000 ms)
+			
 		puts("-----All bits are set.-----");
 		
 		setting_payload();
 		reset_queues();
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+		printf("Waiting 5minutes for another send.");
+		
 	}
 }
 
