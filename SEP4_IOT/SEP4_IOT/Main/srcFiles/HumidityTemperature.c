@@ -8,7 +8,7 @@
 
 int16_t temperature; // Temperature value
 int16_t humidity; // Humidity value
-EventGroupHandle_t _measuredEventGroup;
+extern EventGroupHandle_t _measuredEventGroup;
 QueueHandle_t my_queue_temp;
 QueueHandle_t my_queue_hum;
 

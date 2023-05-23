@@ -11,7 +11,7 @@ float luxValue;
 uint16_t luxInInt;
 
 //Event group
-EventGroupHandle_t _measuredEventGroup;
+extern EventGroupHandle_t _measuredEventGroup;
 
 //Queue
 QueueHandle_t my_queue;

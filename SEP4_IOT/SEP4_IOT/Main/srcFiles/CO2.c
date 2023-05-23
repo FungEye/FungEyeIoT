@@ -9,7 +9,7 @@
 uint16_t co2; // CO2 value  
 
 //Event group
-EventGroupHandle_t _measuredEventGroup;
+extern EventGroupHandle_t _measuredEventGroup;
 
 //Queue
 QueueHandle_t my_co2_queue;

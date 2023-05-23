@@ -10,7 +10,7 @@ void lora_handler_task( void *pvParameters );
 void lora_downlink_task(void *pvParameters);
 
 //Event groups
-EventGroupHandle_t _measuredEventGroup;
+extern EventGroupHandle_t _measuredEventGroup;
 
 static lora_driver_payload_t _uplink_payload;
 
