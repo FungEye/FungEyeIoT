@@ -59,6 +59,16 @@ void _runCO2(void* params);
  */
 void initialize_CO2(QueueHandle_t queue_CO2, EventGroupHandle_t _measuredEventGroup);
 
+/**
+ * @brief Checks for emergency values related to CO2.
+ * 
+ * Checks the CO2 values for emergency levels (above 500000 ppm) and opens the servo if necessary.
+ */
 void checking_emergency_values();
 
+/**
+ * @brief Enqueues CO2 values.
+ * 
+ * Enqueues CO2 values for further processing.
+ */
 void enqueue_CO2();

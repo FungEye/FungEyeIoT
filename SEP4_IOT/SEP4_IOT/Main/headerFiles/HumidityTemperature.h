@@ -46,9 +46,23 @@ void _run(void* params);
  * @brief Initializes the humidity and temperature sensor.
  * 
  * Initializes the humidity and temperature sensor by setting up necessary configurations.
+ * 
+ * @param queue_Temp The queue handle for temperature values.
+ * @param queue_Hum The queue handle for humidity values.
+ * @param _measuredEventGroup The event group handle for indicating measurement readiness.
  */
-void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum,EventGroupHandle_t _measuredEventGroup);
+void initialize_HumidityTemperature(QueueHandle_t queue_Temp, QueueHandle_t queue_Hum, EventGroupHandle_t _measuredEventGroup);
 
+/**
+ * @brief Enqueues temperature values.
+ * 
+ * Enqueues temperature values for further processing.
+ */
 void enqueue_Temp();
 
+/**
+ * @brief Enqueues humidity values.
+ * 
+ * Enqueues humidity values for further processing.
+ */
 void enqueue_Hum();

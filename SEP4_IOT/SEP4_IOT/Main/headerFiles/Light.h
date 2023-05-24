@@ -47,9 +47,24 @@ void _runLight(void* params);
  * @brief Initializes the light sensor.
  * 
  * Initializes the light sensor by setting up necessary configurations.
+ * 
+ * @param queue_Light The queue handle for light intensity values.
+ * @param _measuredEventGroup The event group handle for indicating measurement readiness.
  */
 void initialize_Light(QueueHandle_t queue_Light, EventGroupHandle_t _measuredEventGroup);
 
+/**
+ * @brief Callback function for the light sensor.
+ * 
+ * Called when a new light intensity value is received from the sensor.
+ * 
+ * @param rc The return code from the light sensor.
+ */
 void tsl2591Callback(tsl2591_returnCode_t rc);
 
+/**
+ * @brief Enqueues light intensity values.
+ * 
+ * Enqueues light intensity values for further processing.
+ */
 void enqueue_Light();

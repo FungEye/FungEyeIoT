@@ -27,13 +27,13 @@ void initialize_Servo();
 /**
  * @brief Opens the servo.
  * 
- * Opens the servo
+ * Opens the servo.
  */
 void servo_open();
 
 /**
  * @brief Closes the servo.
  * 
- * Closes the servo
+ * Closes the servo.
  */
 void servo_close();
