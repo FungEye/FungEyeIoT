@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "fff.h"
 #include "FreeRTOS_FFF_MocksDeclaration.h"
+#include "servo_defs.h"
 
 // Include interfaces and define global variables
 // defined by the production code
@@ -45,10 +46,6 @@ FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_sleep, uint32_t);
 FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_saveMac);
 FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_pauseMac);
 FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_resumeMac);
-
-//Servo functions
-FAKE_VOID_FUNC(rc_servo_initialise);
-FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
 
 //Servo functions defined in testForCO2
 
