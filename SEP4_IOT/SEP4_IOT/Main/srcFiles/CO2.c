@@ -62,7 +62,7 @@ void co2Task_run()
 }
 
 void checking_emergency_values(){
-    if (co2 > 1000)
+    if (co2 > 50000)
 	{
 		servo_open();
 		vTaskDelay(pdMS_TO_TICKS(2000));

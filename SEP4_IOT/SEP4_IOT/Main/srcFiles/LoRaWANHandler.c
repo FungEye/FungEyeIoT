@@ -25,6 +25,7 @@ static int16_t hum;	// measured hum
 static int16_t temp; // measured temp
 static int16_t co2; // measured CO2
 static int16_t lux;	// measured lux
+static int servoState = 0; // 1 indicates that the servo is in the opening position and 0 that it is in the closing position
 
 MessageBufferHandle_t downLinkMessageBufferHandle; // Here I make room for two downlink messages in the message buffer
 
@@ -240,14 +241,15 @@ void getting_downlink(){
 		
 		printf("DOWN LINK: from port: %d with payload %d \n", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
 			
-		if (0 == downlinkPayload.bytes[0]) // Check that we have got the expected 4 bytes
+		if (servoState == 1) // Check that we have got the expected 4 bytes
 		{
 			servo_close();
+			servoState = 0;
 			printf("Closing servo !!!\n");
 		}
-		else if(1 == downlinkPayload.bytes[0]){
+		else if(servoState == 0){
 			servo_open();
-			
+			servoState = 1;
 			printf("Opening servo !!!\n");
 		}
 		else{
