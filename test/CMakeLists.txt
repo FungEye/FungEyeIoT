@@ -20,12 +20,16 @@ FetchContent_MakeAvailable(googletest )
 
 #toDO light
 set(SOURCES_TEST
+
     testForHumTemp.cpp
     testForCO2.cpp
     testForLight.cpp
     testForLoraHandler.cpp
+    testForServo.cpp
+
     Servo_defs/servo_defs.cpp
     FreeRTOS_defs/FreeRTOS_FFF_MocksDefinitions.cpp
+    
     ../SEP4_IOT/SEP4_IOT/Main/srcFiles/HumidityTemperature.c
     ../SEP4_IOT/SEP4_IOT/Main/srcFiles/CO2.c
     ../SEP4_IOT/SEP4_IOT/Main/srcFiles/Servo.c
