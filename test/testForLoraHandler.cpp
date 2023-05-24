@@ -46,6 +46,10 @@ FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_saveMac);
 FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_pauseMac);
 FAKE_VALUE_FUNC(lora_driver_returnCode_t, lora_driver_resumeMac);
 
+//Servo functions
+FAKE_VOID_FUNC(rc_servo_initialise);
+FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
+
 //Servo functions defined in testForCO2
 
 // Create Test fixture and Reset all Mocks before each test
@@ -89,8 +93,9 @@ protected:
         RESET_FAKE(lora_driver_pauseMac);
         RESET_FAKE(lora_driver_resumeMac);
 
-        //RESET_FAKE(rc_servo_initialise);
-		//RESET_FAKE(rc_servo_setPosition);
+       		//servo
+		RESET_FAKE(rc_servo_initialise);
+		RESET_FAKE(rc_servo_setPosition);
 
 		RESET_FAKE(xTaskCreate);
 		RESET_FAKE(xTaskGetTickCount);
@@ -174,17 +179,24 @@ TEST_F(Test_production, lora_handlerDownlink){
 }
 
 
-// TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
-//     //clearing call count
-//    // rc_servo_setPosition_fake.call_count = 0;
-    
-//     //setup
-//     lora_driver_payload_t downlinkPayload.bytes[0] = 1;
-//     MessageBufferHandle_t downLinkMessageBufferHandle;
+TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
+    //setup
+   static int servoState = 1; 
 
-//     getting_downlink();
+    getting_downlink();
 	
-//     ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
-//     ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, -100);
 
-// }
+}
+
+TEST_F(Test_production, lora_handlerDownlinkTask_servo_1) {
+    //setup
+   static int servoState = 0; 
+
+    getting_downlink();
+	
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
+
+}
