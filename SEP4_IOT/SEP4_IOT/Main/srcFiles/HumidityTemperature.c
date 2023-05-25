@@ -38,9 +38,7 @@ void humidityTemperatureTask_run() {
 				
 				vTaskDelay(pdMS_TO_TICKS(1000));
                 temperature = hih8120_getTemperature_x10();
-			    printf("TEMP: %d \n", temperature);
-			    printf("HUM: %d \n", humidity);
-
+                
                 enqueue_Temp();
                 enqueue_Hum();
 

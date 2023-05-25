@@ -1,13 +1,13 @@
 #include "gtest/gtest.h"
 #include "fff.h"
 #include "FreeRTOS_FFF_MocksDeclaration.h"
+#include "servo_defs.h"
 // Include interfaces and define global variables
 // defined by the production code
 extern "C"
 {
 	#include "CO2.h"
 	#include "mh_z19.h"
-	#include "rc_servo.h"
 }
 
 // Additional type needed to be able to use callback in fff 
@@ -21,10 +21,6 @@ FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, 	uint16_t *);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_setAutoCalibration, bool);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_calibrateZeroPoint);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_calibrateSpanPoint, uint16_t);
-
-//Servo functions
-FAKE_VOID_FUNC(rc_servo_initialise);
-FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
 
 // Create Test fixture and Reset all Mocks before each test
 class Test_production : public ::testing::Test
@@ -41,7 +37,7 @@ protected:
 		RESET_FAKE(mh_z19_calibrateZeroPoint);
 		RESET_FAKE(mh_z19_calibrateSpanPoint);
 
-		//servo
+		// //servo
 		RESET_FAKE(rc_servo_initialise);
 		RESET_FAKE(rc_servo_setPosition);
 
@@ -104,4 +100,16 @@ TEST_F(Test_production, co2_measurement_negative) {
     co2Task_run();
 
     ASSERT_EQ(mh_z19_getCo2Ppm_fake.call_count, 0);
+}
+
+TEST_F(Test_production, lora_emergency_opening) {
+	//setup
+    myCo2CallBack(60000);
+
+	//clearing call count
+	vTaskDelay_fake.call_count = 0;
+
+    checking_emergency_values();
+	
+	ASSERT_EQ(vTaskDelay_fake.call_count, 1);
 }

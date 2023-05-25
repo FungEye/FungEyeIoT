@@ -12,10 +12,8 @@ void initialize_Servo(){
 
 void servo_open() {
     rc_servo_setPosition (0, 100);
-	//printf("Opening Servo");
 }
 
 void servo_close() {
     rc_servo_setPosition (0, -100);
-	//printf("Closing Servo");
 }

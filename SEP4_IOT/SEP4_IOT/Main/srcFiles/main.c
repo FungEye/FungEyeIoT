@@ -82,7 +82,6 @@ static void createQueues(){
  * @return Returns 0 on successful execution.
  */
 int main(void) {
-	printf("starting!");
     stdio_initialise(ser_USART0); // Initializing stdio driver
     lora_handler_initialise(3); // Initializing LoRaWAN handler with priority 3
 
@@ -94,7 +93,7 @@ int main(void) {
 
     status_leds_initialise(5); // Initializing status LED driver with priority 5 (LoRaWAN)
 
-    printf("Starting...\n");
+    printf("Starting tasks...\n");
     vTaskStartScheduler(); // Starting the FreeRTOS scheduler
 
 	while(1){

@@ -20,11 +20,16 @@ FetchContent_MakeAvailable(googletest )
 
 #toDO light
 set(SOURCES_TEST
+
     testForHumTemp.cpp
     testForCO2.cpp
     testForLight.cpp
     testForLoraHandler.cpp
+    testForServo.cpp
+
+    Servo_defs/servo_defs.cpp
     FreeRTOS_defs/FreeRTOS_FFF_MocksDefinitions.cpp
+    
     ../SEP4_IOT/SEP4_IOT/Main/srcFiles/HumidityTemperature.c
     ../SEP4_IOT/SEP4_IOT/Main/srcFiles/CO2.c
     ../SEP4_IOT/SEP4_IOT/Main/srcFiles/Servo.c
@@ -37,6 +42,7 @@ set(SOURCES_TEST
 # This makes the test.cpp files able to #include target libraries without errors.  
 include_directories(
   FreeRTOS_defs  # Mock and FreeRTOS definitions
+  Servo_defs
   ../SEP4_IOT/SEP4_IOT/Main/headerFiles
   ../SEP4_IOT/SEP4_IOT/drivers
 )

@@ -47,9 +47,6 @@ void co2Task_run()
     {
         puts("CO2 MEASURING FAILED");  // Something went wrong
     }
-
-
-	printf("CO2: %d \n", co2);
     
 	enqueue_CO2();
 
@@ -63,13 +60,14 @@ void co2Task_run()
 
 void checking_emergency_values(){
     if (co2 > 50000)
-	{
+	{ 
 		servo_open();
 		vTaskDelay(pdMS_TO_TICKS(2000));
 		servo_close();
 	}else
 	{
 		vTaskDelay(pdMS_TO_TICKS(2000));
+        vTaskDelay(pdMS_TO_TICKS(2000));
 	}
 }
 

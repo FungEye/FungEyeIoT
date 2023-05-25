@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "fff.h"
 #include "FreeRTOS_FFF_MocksDeclaration.h"
+#include "servo_defs.h"
 
 // Include interfaces and define global variables
 // defined by the production code
@@ -89,8 +90,9 @@ protected:
         RESET_FAKE(lora_driver_pauseMac);
         RESET_FAKE(lora_driver_resumeMac);
 
-        //RESET_FAKE(rc_servo_initialise);
-		//RESET_FAKE(rc_servo_setPosition);
+       		//servo
+		RESET_FAKE(rc_servo_initialise);
+		RESET_FAKE(rc_servo_setPosition);
 
 		RESET_FAKE(xTaskCreate);
 		RESET_FAKE(xTaskGetTickCount);
@@ -174,17 +176,49 @@ TEST_F(Test_production, lora_handlerDownlink){
 }
 
 
-// TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
-//     //clearing call count
-//    // rc_servo_setPosition_fake.call_count = 0;
-    
-//     //setup
-//     lora_driver_payload_t downlinkPayload.bytes[0] = 1;
-//     MessageBufferHandle_t downLinkMessageBufferHandle;
+TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
+   //clearing call count
+    xMessageBufferCreate_fake.call_count = 0;
+    lora_driver_initialise_fake.call_count = 0;
 
-//     getting_downlink();
+    QueueHandle_t queue_Temp1 = xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Hum1= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
+
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
+   
+   //servo_open with servoState = 0 (default)
+    getting_downlink();
+    //servo close with servoState = 1
+    getting_downlink();
 	
-//     ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
-//     ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, -100);
 
-// }
+}
+
+TEST_F(Test_production, lora_handlerDownlinkTask_servo_1) {
+    //clearing call count
+    xMessageBufferCreate_fake.call_count = 0;
+    lora_driver_initialise_fake.call_count = 0;
+
+    QueueHandle_t queue_Temp1 = xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Hum1= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
+
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
+
+    getting_downlink();
+	
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
+
+}
