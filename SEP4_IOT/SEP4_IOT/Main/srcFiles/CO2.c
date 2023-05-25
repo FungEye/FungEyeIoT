@@ -47,9 +47,6 @@ void co2Task_run()
     {
         puts("CO2 MEASURING FAILED");  // Something went wrong
     }
-
-
-	printf("CO2: %d \n", co2);
     
 	enqueue_CO2();
 

@@ -108,11 +108,12 @@ static void _lora_setup(void)
 
 	if (rc == LORA_ACCEPTED)
 	{
-		// Connected to LoRaWAN :-)
+		// Connected to LoRaWAN
 	}
 	else
 	{
 		// Something went wrong
+		printf("Did not connect to LoRaWAN. Check the issue.");
 		// Lets stay here
 		while (1)
 		{
@@ -127,15 +128,13 @@ void lora_handler_task( void *pvParameters )
 
 	_uplink_payload.len = 8;
 	_uplink_payload.portNo = 2;
-
-	//TickType_t xLastWakeTime;
-	//xLastWakeTime = xTaskGetTickCount();
 	
 	for(;;)
 	{
-		//xTaskDelayUntil( &xLastWakeTime, xFrequency );
+		vTaskDelay(pdMS_TO_TICKS(300000)); // Upload message every 5 minutes (300000 ms)
 		
-		puts("-----Waiting for bits.-----");
+		puts("\n-----Waiting for bits.-----\n");
+
 		xEventGroupWaitBits(_measuredEventGroupLora,
 			BIT_TASK_TEMP_READY | BIT_TASK_HUM_READY | BIT_TASK_CO2_READY | BIT_TASK_LIGHT_READY,
 			pdTRUE,
@@ -143,13 +142,12 @@ void lora_handler_task( void *pvParameters )
 			portMAX_DELAY);
 			
 			
-		puts("-----All bits are set.-----");
+		puts("\n-----All bits are set.-----\n");
 		
 		setting_payload();
 		reset_queues();
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
-		printf("Waiting 5minutes for another send.");
-		vTaskDelay(pdMS_TO_TICKS(300000)); // Upload message every 5 minutes (300000 ms)
+		
 	}
 }
 
@@ -179,7 +177,6 @@ void receive_from_queues(){
 	xQueueReceive( queue_CO2,
                     &( co2 ),
                     ( TickType_t ) 20 );
-	printf("CO2 dequeued: %d\n", co2);
 	
 	xQueueReceive( queue_Light,
                     &( lux ),
@@ -238,7 +235,7 @@ void getting_downlink(){
 		// this code must be in the loop of a FreeRTOS task!
 		xMessageBufferReceive(downLinkMessageBufferHandle, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
 		
-		printf("DOWN LINK: from port: %d with payload %d \n", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
+		printf("\nDOWN LINK: from port: %d with payload %d \n", downlinkPayload.portNo, downlinkPayload.bytes[0]); // Just for Debug
 			
 		if (servoState == 1) // Check that we have got the expected 4 bytes
 		{

@@ -22,7 +22,6 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
     switch (rc)
     {
         case TSL2591_DATA_READY:
-        printf("Entered data_ready case, before if statement");
 
         xEventGroupWaitBits(_measuredEventGroupLight,
                             BIT_TASK_LIGHT_EMPTY,
@@ -33,7 +32,6 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
             if (TSL2591_OK == tsl2591_getLux(&luxValue))
             {
                 luxInInt = (uint16_t)luxValue;
-                printf("\nLux: %u\n", luxInInt);
             }
 
             enqueue_Light();
@@ -62,7 +60,6 @@ void initialize_Light(QueueHandle_t queue_Light, EventGroupHandle_t _measuredEve
     if (TSL2591_OK == tsl2591_initialise(tsl2591Callback))
     {
         // Driver initialized successfully
-        // Always check what tsl2591_initialise() returns
     }
 }
 
@@ -80,7 +77,7 @@ void lightTask_run()
     if (fetchDataStatus == TSL2591_OK)
     {
         printf("Light data fetched!\n");
-         //Process the fetched light data here
+         //Callback
     }
     else if (fetchDataStatus == TSL2591_BUSY)
     {
