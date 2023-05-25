@@ -178,7 +178,7 @@ TEST_F(Test_production, lora_handlerDownlink){
 
 TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
     //setup
-   static int servoState = 1; 
+   int servoState = 1; 
 
     getting_downlink();
 	
@@ -189,7 +189,7 @@ TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
 
 TEST_F(Test_production, lora_handlerDownlinkTask_servo_1) {
     //setup
-   static int servoState = 0; 
+   int servoState = 0; 
 
     getting_downlink();
 	
