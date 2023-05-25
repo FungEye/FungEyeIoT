@@ -9,7 +9,12 @@
 
 float luxValue;
 uint16_t luxInInt;
-SemaphoreHandle_t semaphoreLight;
+
+//Event group
+EventGroupHandle_t _measuredEventGroupLight;
+
+//Queue
+QueueHandle_t my_queue;
 
 // Callback function for TSL2591 driver
 void tsl2591Callback(tsl2591_returnCode_t rc)
@@ -17,11 +22,22 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
     switch (rc)
     {
         case TSL2591_DATA_READY:
+
+        xEventGroupWaitBits(_measuredEventGroupLight,
+                            BIT_TASK_LIGHT_EMPTY,
+                            pdFALSE,
+                            pdTRUE,
+                            portMAX_DELAY);
+
             if (TSL2591_OK == tsl2591_getLux(&luxValue))
             {
                 luxInInt = (uint16_t)luxValue;
-                printf("\nLux: %u\n", luxInInt);
             }
+
+            enqueue_Light();
+
+            xEventGroupSetBits(_measuredEventGroupLight, BIT_TASK_LIGHT_READY);
+            vTaskDelay(pdMS_TO_TICKS(60000));   // 6 seconds delay between measurements
             break;
 
         case TSL2591_OK:
@@ -37,12 +53,13 @@ void tsl2591Callback(tsl2591_returnCode_t rc)
     }
 }
 
-void initialize_Light()
+void initialize_Light(QueueHandle_t queue_Light, EventGroupHandle_t _measuredEventGroup)
 {
+	_measuredEventGroupLight = _measuredEventGroup;
+    my_queue = queue_Light;
     if (TSL2591_OK == tsl2591_initialise(tsl2591Callback))
     {
         // Driver initialized successfully
-        // Always check what tsl2591_initialise() returns
     }
 }
 
@@ -55,14 +72,12 @@ void lightTask_run()
     }
     vTaskDelay(pdMS_TO_TICKS(6000));
 
-    xSemaphoreTake(semaphoreLight, portMAX_DELAY);
-
     tsl2591_returnCode_t fetchDataStatus = tsl2591_fetchData();
 
     if (fetchDataStatus == TSL2591_OK)
     {
         printf("Light data fetched!\n");
-         //Process the fetched light data here
+         //Callback
     }
     else if (fetchDataStatus == TSL2591_BUSY)
     {
@@ -73,7 +88,6 @@ void lightTask_run()
         printf("Light driver not initialized\n");
     }
 
-    xSemaphoreGive(semaphoreLight);
 }
 
 void lightTask_create()
@@ -95,4 +109,9 @@ void _runLight(void* params)
     {
         lightTask_run();
     }
+}
+
+void enqueue_Light(){
+		long ok = xQueueSend(my_queue, (void*) &luxInInt, 0 );
+		puts(ok ? "Light enqued: OK" : "Light enqued: FAILED");
 }

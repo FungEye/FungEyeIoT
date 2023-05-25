@@ -57,7 +57,10 @@ protected:
 		RESET_FAKE(xTaskGetTickCount);
 		RESET_FAKE(xTaskDelayUntil);
 		RESET_FAKE(xSemaphoreTake);
-		//RESET_FAKE(tsl2591Callback);
+		
+		//from queues
+		RESET_FAKE(xQueueCreate);
+
 		FFF_RESET_HISTORY();
 	}
 	void TearDown() override
@@ -66,7 +69,12 @@ protected:
 };
 
 TEST_F(Test_production, light_sensorInit) {
-	initialize_Light();
+	QueueHandle_t my_queueLight =  xQueueCreate(1, sizeof(int));
+	
+	EventGroupHandle_t groupLight;
+	groupLight = xEventGroupCreate();
+
+	initialize_Light(my_queueLight, groupLight);
 	ASSERT_EQ(tsl2591_initialise_fake.call_count, 1);
 }
 
@@ -92,25 +100,6 @@ TEST_F(Test_production, light_createTaskArgsCheck)
 	ASSERT_EQ(xTaskCreate_fake.arg4_val, 1);
 	ASSERT_EQ(xTaskCreate_fake.arg5_val, nullptr);
 
-}
-
-TEST_F(Test_production, light_semaphoreCall){
-	//Set up
-	SemaphoreHandle_t semaphoreLight;
-	semaphoreLight = xSemaphoreCreateBinary();
-    xSemaphoreGive(semaphoreLight);
-
-	//clearing the call count before calling the function
-	xSemaphoreTake_fake.call_count = 0;
-	xSemaphoreGive_fake.call_count = 0;
-
-	lightTask_create();
-	lightTask_run();
-
-	ASSERT_EQ(xSemaphoreTake_fake.call_count, 1);
-	ASSERT_EQ(xSemaphoreTake_fake.arg0_val, semaphoreLight);
-	ASSERT_EQ(xSemaphoreTake_fake.arg1_val, portMAX_DELAY);
-	ASSERT_EQ(xSemaphoreGive_fake.call_count, 1);
 }
 
 TEST_F(Test_production, light_measurementRun){

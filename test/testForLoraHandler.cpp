@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "fff.h"
 #include "FreeRTOS_FFF_MocksDeclaration.h"
+#include "servo_defs.h"
 
 // Include interfaces and define global variables
 // defined by the production code
@@ -89,12 +90,14 @@ protected:
         RESET_FAKE(lora_driver_pauseMac);
         RESET_FAKE(lora_driver_resumeMac);
 
-        //RESET_FAKE(rc_servo_initialise);
-		//RESET_FAKE(rc_servo_setPosition);
+       		//servo
+		RESET_FAKE(rc_servo_initialise);
+		RESET_FAKE(rc_servo_setPosition);
 
 		RESET_FAKE(xTaskCreate);
 		RESET_FAKE(xTaskGetTickCount);
 		RESET_FAKE(xTaskDelayUntil);
+
 		FFF_RESET_HISTORY();
 	}
 	void TearDown() override
@@ -106,7 +109,15 @@ TEST_F(Test_production, lora_initialization) {
     xMessageBufferCreate_fake.call_count = 0;
     lora_driver_initialise_fake.call_count = 0;
 
-    lora_initializer();
+    QueueHandle_t queue_Temp1 = xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Hum1= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
+
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
 
     //checking if we create a buffer handling downlink
     ASSERT_EQ(xMessageBufferCreate_fake.call_count, 1);
@@ -131,66 +142,83 @@ TEST_F(Test_production, lora_initializationTaskCreation) {
 	ASSERT_EQ(xTaskCreate_fake.call_count, 2);
 }
 
-// TEST_F(Test_production, lora_handlerUplinkTask) {
-//     //clearing call count
-// 	lora_driver_resetRn2483_fake.call_count = 0;
-//     lora_driver_flushBuffers_fake.call_count = 0;
-//     lora_driver_sendUploadMessage_fake.call_count = 0;
+TEST_F(Test_production, lora_queuesSetup) {
+        //clearing call count
+    xQueueReceive_fake.call_count = 0;
 
-//     //setup
-//     lora_driver_payload_t _uplink_payload;
-//     UBaseType_t lora_handler_task_priority = 1;
+    receive_from_queues();
+    ASSERT_EQ(xQueueReceive_fake.call_count, 4);
+}
 
-//     //lora_handler_initialise(lora_handler_task_priority);
-//     lora_handler_task();
+TEST_F(Test_production, lora_queuesReset) {
+        //clearing call count
+    xQueueReset_fake.call_count = 0;
+
+    reset_queues();
+    ASSERT_EQ(xQueueReset_fake.call_count, 4);
+}
+
+TEST_F(Test_production, lora_handlerDownlink){
+    xMessageBufferReceive_fake.call_count = 0;
+
+   //setup
+    MessageBufferHandle_t downLinkMessageBufferHandle = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+    UBaseType_t lora_handler_task_priority = 1;
+
+    //lora_handler_initialise(lora_handler_task_priority);
+    getting_downlink();
+
+    //correctly calling xMessageBufferReceive
+    ASSERT_EQ(xMessageBufferReceive_fake.call_count, 1);
+    ASSERT_EQ(xMessageBufferReceive_fake.arg0_val, downLinkMessageBufferHandle);
+    ASSERT_EQ(xMessageBufferReceive_fake.arg2_val, sizeof(lora_driver_payload_t));
+    ASSERT_EQ(xMessageBufferReceive_fake.arg3_val, portMAX_DELAY);
+}
+
+
+TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
+   //clearing call count
+    xMessageBufferCreate_fake.call_count = 0;
+    lora_driver_initialise_fake.call_count = 0;
+
+    QueueHandle_t queue_Temp1 = xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Hum1= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
+
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
+   
+   //servo_open with servoState = 0 (default)
+    getting_downlink();
+    //servo close with servoState = 1
+    getting_downlink();
 	
-//     ASSERT_EQ(lora_driver_resetRn2483_fake.call_count, 2);
-//     ASSERT_EQ(lora_driver_flushBuffers_fake.call_count, 1);
-//     ASSERT_EQ(lora_driver_sendUploadMessage_fake.call_count, 1);
-//     ASSERT_EQ(lora_driver_sendUploadMessage_fake.arg0_val, false);
-//     ASSERT_EQ(lora_driver_sendUploadMessage_fake.arg1_val, &_uplink_payload);
-// }
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, -100);
 
-// TEST_F(Test_production, lora_handlerDownlinkTask) {
-//     //clearing call count
-// 	lora_driver_resetRn2483_fake.call_count = 0;
-//     lora_driver_flushBuffers_fake.call_count = 0;
-//     lora_driver_sendUploadMessage_fake.call_count = 0;
-//     xMessageBufferReceive_fake.call_count = 0;
+}
 
-//     //setup
-//     lora_driver_payload_t downlinkPayload;
-//     MessageBufferHandle_t downLinkMessageBufferHandle;
-//     UBaseType_t lora_handler_task_priority = 1;
+TEST_F(Test_production, lora_handlerDownlinkTask_servo_1) {
+    //clearing call count
+    xMessageBufferCreate_fake.call_count = 0;
+    lora_driver_initialise_fake.call_count = 0;
 
-//     //lora_handler_initialise(lora_handler_task_priority);
-//     lora_downlink_task();
+    QueueHandle_t queue_Temp1 = xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Hum1= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
+
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
+
+    getting_downlink();
 	
-//     ASSERT_EQ(lora_driver_resetRn2483_fake.call_count, 2);
-//     ASSERT_EQ(lora_driver_flushBuffers_fake.call_count, 1);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
+    ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
 
-//     //correctly calling xMessageBufferReceive
-//     ASSERT_EQ(xMessageBufferReceive_fake.call_count, 1);
-//     ASSERT_EQ(xMessageBufferReceive_fake.arg0_val, downLinkMessageBufferHandle);
-//     ASSERT_EQ(xMessageBufferReceive_fake.arg1_val, &downlinkPayload);
-//     ASSERT_EQ(xMessageBufferReceive_fake.arg2_val, sizeof(lora_driver_payload_t));
-//     ASSERT_EQ(xMessageBufferReceive_fake.arg3_val, portMAX_DELAY);
-
-// }
-
-
-// TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
-//     //clearing call count
-//     rc_servo_setPosition_fake.call_count = 0;
-    
-//     //setup
-//     lora_driver_payload_t downlinkPayload = 1;
-//     MessageBufferHandle_t downLinkMessageBufferHandle;
-
-//     lora_handler_task();
-	
-//     ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
-//     ASSERT_EQ(rc_servo_setPosition_fake.arg1_val, 100);
-
-// }
-//
+}
