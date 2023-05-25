@@ -142,7 +142,6 @@ void lora_handler_task( void *pvParameters )
 			pdTRUE,
 			portMAX_DELAY);
 			
-			 vTaskDelay(pdMS_TO_TICKS(300000)); // Upload message every 5 minutes (300000 ms)
 			
 		puts("-----All bits are set.-----");
 		
@@ -150,7 +149,7 @@ void lora_handler_task( void *pvParameters )
 		reset_queues();
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 		printf("Waiting 5minutes for another send.");
-		
+		vTaskDelay(pdMS_TO_TICKS(300000)); // Upload message every 5 minutes (300000 ms)
 	}
 }
 
