@@ -177,9 +177,23 @@ TEST_F(Test_production, lora_handlerDownlink){
 
 
 TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
-    //setup
-   int servoState = 1; 
+   //clearing call count
+    xMessageBufferCreate_fake.call_count = 0;
+    lora_driver_initialise_fake.call_count = 0;
 
+    QueueHandle_t queue_Temp1 = xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Hum1= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
+
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
+   
+   //servo_open with servoState = 0 (default)
+    getting_downlink();
+    //servo close with servoState = 1
     getting_downlink();
 	
     ASSERT_EQ(rc_servo_setPosition_fake.arg0_val, 0);
@@ -188,8 +202,19 @@ TEST_F(Test_production, lora_handlerDownlinkTask_servo_0) {
 }
 
 TEST_F(Test_production, lora_handlerDownlinkTask_servo_1) {
-    //setup
-   int servoState = 0; 
+    //clearing call count
+    xMessageBufferCreate_fake.call_count = 0;
+    lora_driver_initialise_fake.call_count = 0;
+
+    QueueHandle_t queue_Temp1 = xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Hum1= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queueCo2= xQueueCreate(1, sizeof(int));
+    QueueHandle_t queue_Light1= xQueueCreate(1, sizeof(int));
+
+    EventGroupHandle_t groupLora;
+	groupLora = xEventGroupCreate();
+
+    lora_initializer( queue_Temp1,  queue_Hum1,  queueCo2,  queue_Light1, groupLora);
 
     getting_downlink();
 	

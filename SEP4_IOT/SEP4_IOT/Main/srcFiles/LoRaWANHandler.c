@@ -25,7 +25,7 @@ static int16_t hum;	// measured hum
 static int16_t temp; // measured temp
 static int16_t co2; // measured CO2
 static int16_t lux;	// measured lux
-static int servoState = 0; // 1 indicates that the servo is in the opening position and 0 that it is in the closing position
+static int servoState; // 1 indicates that the servo is in the opening position and 0 that it is in the closing position
 
 MessageBufferHandle_t downLinkMessageBufferHandle; // Here I make room for two downlink messages in the message buffer
 
@@ -35,6 +35,7 @@ void lora_initializer(QueueHandle_t queue_Temp1, QueueHandle_t queue_Hum1, Queue
 	queue_Hum = queue_Hum1;
 	queue_CO2 = queueCo2;
 	queue_Light = queue_Light1;
+	servoState = 0;
 
 	downLinkMessageBufferHandle  = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	lora_driver_initialise(ser_USART1, downLinkMessageBufferHandle); // The parameter is the USART port the RN2483 module is connected to - in this case USART1 - here no message buffer for down-link messages are defined
